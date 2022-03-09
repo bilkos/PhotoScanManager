@@ -3,57 +3,72 @@
 # Version: 0.1 (alpha)
 
 import zip_archive
+import time
 import datetime
 from configparser import ConfigParser
 from colorama import init, Fore, Back, Style
+#init(autoreset=True)
 init(autoreset=True)
-
 
 
 # Application start greeting
 print(Back.BLUE + "┌───────────────────────────────────────────────────────┐")
 print(Back.BLUE + "│         Photogrammetry Point Report Generator         │")
-print(Back.BLUE + "└───────────────────────────────────────────────────────┘")
-
+print(Back.BLUE + "└───────────────────────────────────────────────────────┘" + Style.RESET_ALL)
+time.sleep(1)
 
 # Load settings from files in ./settings folder
 def loadSettings():
 	global meta_worksite, meta_station, meta_datetime, meta_serialnr, meta_surveyor
-	print("Loading Settings...")
 	
+	print(Fore.GREEN + "\nLoading Settings...\n")
+	
+	time.sleep(1)
+	configSettings()
+	time.sleep(1)
+
 	print("\nWorksite data:")
 	f_worksite = open("settings/worksite.txt", "r")
 	for x in f_worksite:
 		print(x.strip())
 	f_worksite.close()
+	time.sleep(0.5)
 
 	print("\nInstrument data:")
 	f_instrument = open("settings/instrument.txt", "r")
 	for x in f_instrument:
 		print(x.strip())
 	f_instrument.close()
+	time.sleep(0.5)
 	
 	print("\nSurveyor data:")
 	f_worksite = open("settings/surveyor.txt", "r")
 	for x in f_worksite:
 		print(x.strip())
 	f_worksite.close()
+	time.sleep(0.5)
 
 	print("\nScan type data:")
 	f_worksite = open("settings/scan_type.txt", "r")
 	for x in f_worksite:
 		print(x.strip())
 	f_worksite.close()
+	time.sleep(0.5)
 
 	print("\nScan detail data:")
 	f_worksite = open("settings/scan_detail.txt", "r")
 	for x in f_worksite:
 		print(x.strip())
 	f_worksite.close()
+	time.sleep(0.5)
+
+	print(Style.RESET_ALL)
 
 
 # Settings configuration
 def configSettings():
+	global metadata_export, metadata_external, metadata_fixed, logfile, processed_db, ftp_upload, auto_upload, backup, backup_cleanup
+	global fixed_worksite, fixed_scan_type, fixed_scan_detail, fixed_instrument, fixed_surveyor, fixed_station
 	config = ConfigParser()
 	# instantiate
 	config = ConfigParser()
@@ -76,7 +91,31 @@ def configSettings():
 	fixed_scan_detail = config.get('METADATA', 'fixed_scan_detail')
 	fixed_instrument = config.get('METADATA', 'fixed_instrument')
 	fixed_surveyor = config.get('METADATA', 'fixed_surveyor')
-	fixed_station = config.get('METADATA', 'fixed_station')
+
+	print("SETTINGS: METADATA")
+	print("==================")
+	print("Enable Metadata: " + str(metadata_export) + " / As external file: " + str(metadata_external) + " / Use fixed values: " + str(metadata_fixed) + "\n")
+	if metadata_fixed == True:
+		print("\t" + "METADATA FIXED VALUES")
+		print("\t" + "=====================")
+		print("\t" + "Worksite: " + str(fixed_worksite))
+		print("\t" + "Scan Type: " + str(fixed_scan_type))
+		print("\t" + "Scan Detail: " + str(fixed_scan_detail))
+		print("\t" + "Instrument: " + str(fixed_instrument))
+		print("\t" + "Surveyor: " + str(fixed_surveyor) + "\n")
+	time.sleep(0.5)
+	print("SETTINGS: LOGS")
+	print("==============")
+	print("Enable Logfile: " + str(logfile) + " / Processed DB: " + str(processed_db) + "\n")
+	time.sleep(0.5)
+	print("SETTINGS: FTP UPLOAD")
+	print("====================")
+	print("Enable FTP upload: " + str(ftp_upload) + " / Auto upload: " + str(auto_upload) + "\n")
+	time.sleep(0.5)
+	print("SETTINGS: BACKUP")
+	print("================")
+	print("Enable Backup: " + str(backup) + " / Backup Cleanup: " + str(backup_cleanup) + "\n")
+	time.sleep(0.5)
 
 	# update existing value
 	#config.set('section_a', 'string_val', 'world')
@@ -94,7 +133,7 @@ def configSettings():
 
 # Get folder names for processing
 def readData():
-	print("\n" + Fore.YELLOW + "Looking for new scan data in ../ScanData/")
+	print("\n" + Fore.YELLOW + "Looking for new scan data in ../ScanDataNew/")
 
 
 def formatPoint():
@@ -140,4 +179,4 @@ readData()
 setDateTime()
 writeMetaHeader()
 formatPoint()
-zip_archive.zipFilesInDir("ScanDataUnprocessed", "ScanDataPackages/test.zip")
+#zip_archive.zipFilesInDir("ScanDataUnprocessed", "ScanDataPackages/test.zip")
