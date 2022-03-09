@@ -71,11 +71,12 @@ def configSettings():
 	auto_upload = config.getboolean('UPLOAD', 'auto_upload')
 	backup = config.getboolean('BACKUP', 'backup')
 	backup_cleanup = config.getboolean('BACKUP', 'backup_cleanup')
-
+	
 	# update existing value
 	#config.set('section_a', 'string_val', 'world')
 
 	# add a new section and some values
+
 	#config.add_section('section_b')
 	#config.set('section_b', 'meal_val', 'spam')
 	#config.set('section_b', 'not_found_val', '404')
