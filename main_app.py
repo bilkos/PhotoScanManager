@@ -216,7 +216,7 @@ def pointFormat():
 
 
 # Enter Date and Time for new export
-def metaDatetime():
+def metaUserDatetime():
 	global datetime_out
 	dnow = datetime.datetime.now()
 	print("\n" + Fore.YELLOW + "Date (Format= YYYY-MM-DD) >>>")
@@ -266,10 +266,9 @@ def appStartup():
 	else:
 		print(Fore.GREEN + Style.BRIGHT + "Start...")
 		dataRead()
-		metaDatetime()
+		metaUserDatetime()
 		metaExport()
 		pointFormat()
-
 
 
 appStartup()
