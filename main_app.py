@@ -2,7 +2,7 @@
 # Made by: Boris Bilc
 # Version: 0.1 (alpha)
 
-import zip_archive
+import modlib.zip_archive as zip_archive
 import time
 import datetime
 from configparser import ConfigParser
@@ -12,61 +12,13 @@ init(autoreset=True)
 
 
 # Application start greeting
-print(Back.BLUE + "┌───────────────────────────────────────────────────────┐")
-print(Back.BLUE + "│         Photogrammetry Point Report Generator         │")
-print(Back.BLUE + "└───────────────────────────────────────────────────────┘" + Style.RESET_ALL)
+print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "┌───────────────────────────────────────────────────────┐")
+print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "│         Photogrammetry Point Report Generator         │")
+print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "└───────────────────────────────────────────────────────┘")
 time.sleep(1)
 
-# Load settings from files in ./settings folder
-def loadSettings():
-	global meta_worksite, meta_station, meta_datetime, meta_serialnr, meta_surveyor
-	
-	print(Fore.GREEN + "\nLoading Settings...\n")
-	
-	time.sleep(1)
-	configSettings()
-	time.sleep(1)
-
-	print("\nWorksite data:")
-	f_worksite = open("settings/worksite.txt", "r")
-	for x in f_worksite:
-		print(x.strip())
-	f_worksite.close()
-	time.sleep(0.5)
-
-	print("\nInstrument data:")
-	f_instrument = open("settings/instrument.txt", "r")
-	for x in f_instrument:
-		print(x.strip())
-	f_instrument.close()
-	time.sleep(0.5)
-	
-	print("\nSurveyor data:")
-	f_worksite = open("settings/surveyor.txt", "r")
-	for x in f_worksite:
-		print(x.strip())
-	f_worksite.close()
-	time.sleep(0.5)
-
-	print("\nScan type data:")
-	f_worksite = open("settings/scan_type.txt", "r")
-	for x in f_worksite:
-		print(x.strip())
-	f_worksite.close()
-	time.sleep(0.5)
-
-	print("\nScan detail data:")
-	f_worksite = open("settings/scan_detail.txt", "r")
-	for x in f_worksite:
-		print(x.strip())
-	f_worksite.close()
-	time.sleep(0.5)
-
-	print(Style.RESET_ALL)
-
-
-# Settings configuration
-def configSettings():
+# Read settings configuration from 'app_settings.ini'
+def configSettingsRead():
 	global metadata_export, metadata_external, metadata_fixed, logfile, processed_db, ftp_upload, auto_upload, backup, backup_cleanup
 	global fixed_worksite, fixed_scan_type, fixed_scan_detail, fixed_instrument, fixed_surveyor, fixed_station
 	config = ConfigParser()
@@ -92,30 +44,146 @@ def configSettings():
 	fixed_instrument = config.get('METADATA', 'fixed_instrument')
 	fixed_surveyor = config.get('METADATA', 'fixed_surveyor')
 
-	print("SETTINGS: METADATA")
-	print("==================")
-	print("Enable Metadata: " + str(metadata_export) + " / As external file: " + str(metadata_external) + " / Use fixed values: " + str(metadata_fixed) + "\n")
+	print(Fore.GREEN + "SETTINGS: METADATA")
+	print(Fore.GREEN + "==================")
+	print(Fore.GREEN + "Enable Metadata: " + Fore.CYAN + Style.BRIGHT + str(metadata_export))
+	print(Fore.GREEN + "Create external file: " + Fore.CYAN + Style.BRIGHT + str(metadata_external))
+	print(Fore.GREEN + "Use fixed values: " + Fore.CYAN + Style.BRIGHT + str(metadata_fixed) + "\n")
 	if metadata_fixed == True:
-		print("\t" + "METADATA FIXED VALUES")
-		print("\t" + "=====================")
-		print("\t" + "Worksite: " + str(fixed_worksite))
-		print("\t" + "Scan Type: " + str(fixed_scan_type))
-		print("\t" + "Scan Detail: " + str(fixed_scan_detail))
-		print("\t" + "Instrument: " + str(fixed_instrument))
-		print("\t" + "Surveyor: " + str(fixed_surveyor) + "\n")
-	time.sleep(0.5)
-	print("SETTINGS: LOGS")
-	print("==============")
-	print("Enable Logfile: " + str(logfile) + " / Processed DB: " + str(processed_db) + "\n")
-	time.sleep(0.5)
-	print("SETTINGS: FTP UPLOAD")
-	print("====================")
-	print("Enable FTP upload: " + str(ftp_upload) + " / Auto upload: " + str(auto_upload) + "\n")
-	time.sleep(0.5)
-	print("SETTINGS: BACKUP")
-	print("================")
-	print("Enable Backup: " + str(backup) + " / Backup Cleanup: " + str(backup_cleanup) + "\n")
-	time.sleep(0.5)
+		print(Fore.GREEN + "\t" + "METADATA FIXED VALUES")
+		print(Fore.GREEN + "\t" + "=====================")
+		print(Fore.GREEN + "\t" + "Worksite: " + Fore.CYAN + Style.BRIGHT + str(fixed_worksite))
+		print(Fore.GREEN + "\t" + "Scan Type: " + Fore.CYAN + Style.BRIGHT + str(fixed_scan_type))
+		print(Fore.GREEN + "\t" + "Scan Detail: " + Fore.CYAN + Style.BRIGHT + str(fixed_scan_detail))
+		print(Fore.GREEN + "\t" + "Instrument: " + Fore.CYAN + Style.BRIGHT + str(fixed_instrument))
+		print(Fore.GREEN + "\t" + "Surveyor: " + Fore.CYAN + Style.BRIGHT + str(fixed_surveyor) + "\n")
+	time.sleep(0.2)
+	print(Fore.GREEN + "SETTINGS: LOGS")
+	print(Fore.GREEN + "==============")
+	print(Fore.GREEN + "Enable Logfile: " + Fore.CYAN + Style.BRIGHT + str(logfile))
+	print(Fore.GREEN + "Processed DB: " + Fore.CYAN + Style.BRIGHT + str(processed_db) + "\n")
+	time.sleep(0.2)
+	print(Fore.GREEN + "SETTINGS: FTP UPLOAD")
+	print(Fore.GREEN + "====================")
+	print(Fore.GREEN + "Enable FTP upload: " + Fore.CYAN + Style.BRIGHT + str(ftp_upload))
+	print(Fore.GREEN + "Auto upload: " + Fore.CYAN + Style.BRIGHT + str(auto_upload) + "\n")
+	time.sleep(0.2)
+	print(Fore.GREEN + "SETTINGS: BACKUP")
+	print(Fore.GREEN + "================")
+	print(Fore.GREEN + "Enable Backup: " + Fore.CYAN + Style.BRIGHT + str(backup))
+	print(Fore.GREEN + "Backup Cleanup: " + Fore.CYAN + Style.BRIGHT + str(backup_cleanup) + "\n")
+
+	# update existing value
+	#config.set('section_a', 'string_val', 'world')
+
+	# add a new section and some values
+
+	#config.add_section('section_b')
+	#config.set('section_b', 'meal_val', 'spam')
+	#config.set('section_b', 'not_found_val', '404')
+
+	# save to a file
+	#with open('test_update.ini', 'w') as configfile:
+	#	config.write(configfile)
+
+
+# Load settings from files in ./settings folder
+def metaOptionsRead():
+	global meta_worksite, meta_station, meta_datetime, meta_serialnr, meta_surveyor
+	
+	print(Fore.GREEN + "\nWorksite data:")
+	f_worksite = open("settings/worksite.txt", "r")
+	for x in f_worksite:
+		print(Fore.CYAN + Style.BRIGHT + x.strip())
+	f_worksite.close()
+	time.sleep(0.2)
+
+	print(Fore.GREEN + "\nInstrument data:")
+	f_instrument = open("settings/instrument.txt", "r")
+	for x in f_instrument:
+		print(Fore.CYAN + Style.BRIGHT + x.strip())
+	f_instrument.close()
+	time.sleep(0.2)
+	
+	print(Fore.GREEN + "\nSurveyor data:")
+	f_worksite = open("settings/surveyor.txt", "r")
+	for x in f_worksite:
+		print(Fore.CYAN + Style.BRIGHT + x.strip())
+	f_worksite.close()
+	time.sleep(0.2)
+
+	print(Fore.GREEN + "\nScan type data:")
+	f_worksite = open("settings/scan_type.txt", "r")
+	for x in f_worksite:
+		print(Fore.CYAN + Style.BRIGHT + x.strip())
+	f_worksite.close()
+	time.sleep(0.2)
+
+	print(Fore.GREEN + "\nScan detail data:")
+	f_worksite = open("settings/scan_detail.txt", "r")
+	for x in f_worksite:
+		print(Fore.CYAN + Style.BRIGHT + x.strip())
+	f_worksite.close()
+	time.sleep(0.2)
+
+	print(Style.RESET_ALL)
+
+
+# Settings configuration
+def settingsRead():
+	global metadata_export, metadata_external, metadata_fixed, logfile, processed_db, ftp_upload, auto_upload, backup, backup_cleanup
+	global fixed_worksite, fixed_scan_type, fixed_scan_detail, fixed_instrument, fixed_surveyor, fixed_station
+	config = ConfigParser()
+	# instantiate
+	config = ConfigParser()
+
+	# parse existing file
+	config.read('settings/app_settings.ini')
+
+	# read values from a section
+	metadata_export = config.getboolean('METADATA', 'metadata_export')
+	metadata_external = config.getboolean('METADATA', 'metadata_external')
+	metadata_fixed = config.getboolean('METADATA', 'metadata_fixed')
+	logfile = config.getboolean('LOGS', 'logfile')
+	processed_db = config.getboolean('LOGS', 'processed_db')
+	ftp_upload = config.getboolean('UPLOAD', 'ftp_upload')
+	auto_upload = config.getboolean('UPLOAD', 'auto_upload')
+	backup = config.getboolean('BACKUP', 'backup')
+	backup_cleanup = config.getboolean('BACKUP', 'backup_cleanup')
+	fixed_worksite = config.get('METADATA', 'fixed_worksite')
+	fixed_scan_type = config.get('METADATA', 'fixed_scan_type')
+	fixed_scan_detail = config.get('METADATA', 'fixed_scan_detail')
+	fixed_instrument = config.get('METADATA', 'fixed_instrument')
+	fixed_surveyor = config.get('METADATA', 'fixed_surveyor')
+
+	print(Fore.GREEN + "SETTINGS: METADATA")
+	print(Fore.GREEN + "==================")
+	print(Fore.GREEN + "Enable Metadata: " + Fore.CYAN + Style.BRIGHT + str(metadata_export))
+	print(Fore.GREEN + "Create external file: " + Fore.CYAN + Style.BRIGHT + str(metadata_external))
+	print(Fore.GREEN + "Use fixed values: " + Fore.CYAN + Style.BRIGHT + str(metadata_fixed) + "\n")
+	if metadata_fixed == True:
+		print(Fore.GREEN + "\t" + "METADATA FIXED VALUES")
+		print(Fore.GREEN + "\t" + "=====================")
+		print(Fore.GREEN + "\t" + "Worksite: " + Fore.CYAN + Style.BRIGHT + str(fixed_worksite))
+		print(Fore.GREEN + "\t" + "Scan Type: " + Fore.CYAN + Style.BRIGHT + str(fixed_scan_type))
+		print(Fore.GREEN + "\t" + "Scan Detail: " + Fore.CYAN + Style.BRIGHT + str(fixed_scan_detail))
+		print(Fore.GREEN + "\t" + "Instrument: " + Fore.CYAN + Style.BRIGHT + str(fixed_instrument))
+		print(Fore.GREEN + "\t" + "Surveyor: " + Fore.CYAN + Style.BRIGHT + str(fixed_surveyor) + "\n")
+	time.sleep(0.2)
+	print(Fore.GREEN + "SETTINGS: LOGS")
+	print(Fore.GREEN + "==============")
+	print(Fore.GREEN + "Enable Logfile: " + Fore.CYAN + Style.BRIGHT + str(logfile))
+	print(Fore.GREEN + "Processed DB: " + Fore.CYAN + Style.BRIGHT + str(processed_db) + "\n")
+	time.sleep(0.2)
+	print(Fore.GREEN + "SETTINGS: FTP UPLOAD")
+	print(Fore.GREEN + "====================")
+	print(Fore.GREEN + "Enable FTP upload: " + Fore.CYAN + Style.BRIGHT + str(ftp_upload))
+	print(Fore.GREEN + "Auto upload: " + Fore.CYAN + Style.BRIGHT + str(auto_upload) + "\n")
+	time.sleep(0.2)
+	print(Fore.GREEN + "SETTINGS: BACKUP")
+	print(Fore.GREEN + "================")
+	print(Fore.GREEN + "Enable Backup: " + Fore.CYAN + Style.BRIGHT + str(backup))
+	print(Fore.GREEN + "Backup Cleanup: " + Fore.CYAN + Style.BRIGHT + str(backup_cleanup) + "\n")
 
 	# update existing value
 	#config.set('section_a', 'string_val', 'world')
@@ -132,11 +200,11 @@ def configSettings():
 
 
 # Get folder names for processing
-def readData():
+def dataRead():
 	print("\n" + Fore.YELLOW + "Looking for new scan data in ../ScanDataNew/")
 
 
-def formatPoint():
+def pointFormat():
 	global point_id, point_e, point_n, point_h, point_out
 	point_id = "1"
 	point_e = "406589.455"
@@ -148,7 +216,7 @@ def formatPoint():
 
 
 # Enter Date and Time for new export
-def setDateTime():
+def metaDatetime():
 	global datetime_out
 	dnow = datetime.datetime.now()
 	print("\n" + Fore.YELLOW + "Date (Format= YYYY-MM-DD) >>>")
@@ -163,20 +231,45 @@ def setDateTime():
 
 
 # Prepare and Write metadata header
-def writeMetaHeader():
+def metaExport():
 	# Template for Metadata output
-	# Delovišče: T8 Koper
-	# Podatki o izkopu: Izkop kalote na stacionaži 25+740.8
-	# Datum in čas slikanja: 27.02.2022. 04:20
-	# Serijska št. tahimetra: ------
-	# Ime in priimek: Ssss mmmmm
+	'''
+	Datum in čas: 27.02.2022. 04:20
+	Delovišče: T8 Koper
+	Podatki: Izkop kalote na stacionaži 25+740.8
+	Stacionaža: 25+999.0
+	Instrument: TS16 1" (123456)
+	Ime in priimek: Toje Posnel
+	'''
 	print("Metadata values")
 	print(datetime_out)
 
+def packageCreate(source_folder, package_file):
+	zip_archive.zipFilesInDir(source_folder, package_file)
 
-loadSettings()
-readData()
-setDateTime()
-writeMetaHeader()
-formatPoint()
-#zip_archive.zipFilesInDir("ScanDataUnprocessed", "ScanDataPackages/test.zip")
+# App startup
+def appStartup():
+	print(Fore.GREEN + "\nLoading Settings...\n")
+	time.sleep(0.5)
+	settingsRead()
+	time.sleep(0.5)
+	metaOptionsRead()
+	time.sleep(0.5)
+
+	print(Fore.YELLOW + "Continue (" + Style.BRIGHT + "Enter" + Style.DIM + ") / Settings (" + Style.BRIGHT + "S" + Style.DIM + ") / Quit (" + Style.BRIGHT + "Q" + Style.DIM + ")")
+	app_start = input()
+	if app_start == "s" or app_start == "S":
+		print(Fore.MAGENTA + Style.BRIGHT + "Settings Configuration...")
+	elif app_start == "q" or app_start == "Q":
+		print(Fore.RED + Style.BRIGHT + "\nStopping app...\nGood bye!\n\n")
+		quit()
+	else:
+		print(Fore.GREEN + Style.BRIGHT + "Start...")
+		dataRead()
+		metaDatetime()
+		metaExport()
+		pointFormat()
+
+
+
+appStartup()
