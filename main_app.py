@@ -71,7 +71,13 @@ def configSettings():
 	auto_upload = config.getboolean('UPLOAD', 'auto_upload')
 	backup = config.getboolean('BACKUP', 'backup')
 	backup_cleanup = config.getboolean('BACKUP', 'backup_cleanup')
-	
+	fixed_worksite = config.get('METADATA', 'fixed_worksite')
+	fixed_scan_type = config.get('METADATA', 'fixed_scan_type')
+	fixed_scan_detail = config.get('METADATA', 'fixed_scan_detail')
+	fixed_instrument = config.get('METADATA', 'fixed_instrument')
+	fixed_surveyor = config.get('METADATA', 'fixed_surveyor')
+	fixed_station = config.get('METADATA', 'fixed_station')
+
 	# update existing value
 	#config.set('section_a', 'string_val', 'world')
 
