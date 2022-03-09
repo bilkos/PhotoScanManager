@@ -62,22 +62,27 @@ def configSettings():
 	config.read('settings/app_settings.ini')
 
 	# read values from a section
-	metadata_export = config.get('METADATA', 'metadata_export')
+	metadata_export = config.getboolean('METADATA', 'metadata_export')
 	metadata_external = config.getboolean('METADATA', 'metadata_external')
-	int_val = config.getint('METADATA', 'int_val')
-	float_val = config.getfloat('METADATA', 'pi_val')
+	metadata_fixed = config.getboolean('METADATA', 'metadata_fixed')
+	logfile = config.getboolean('LOGS', 'logfile')
+	processed_db = config.getboolean('LOGS', 'processed_db')
+	ftp_upload = config.getboolean('UPLOAD', 'ftp_upload')
+	auto_upload = config.getboolean('UPLOAD', 'auto_upload')
+	backup = config.getboolean('BACKUP', 'backup')
+	backup_cleanup = config.getboolean('BACKUP', 'backup_cleanup')
 
 	# update existing value
-	config.set('section_a', 'string_val', 'world')
+	#config.set('section_a', 'string_val', 'world')
 
 	# add a new section and some values
-	config.add_section('section_b')
-	config.set('section_b', 'meal_val', 'spam')
-	config.set('section_b', 'not_found_val', '404')
+	#config.add_section('section_b')
+	#config.set('section_b', 'meal_val', 'spam')
+	#config.set('section_b', 'not_found_val', '404')
 
 	# save to a file
-	with open('test_update.ini', 'w') as configfile:
-		config.write(configfile)
+	#with open('test_update.ini', 'w') as configfile:
+	#	config.write(configfile)
 
 
 # Get folder names for processing
