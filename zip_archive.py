@@ -1,3 +1,6 @@
+# Photogrammetry Point Report Generator
+# Module: ZIP archiving
+
 from zipfile import ZipFile
 import os
 from os.path import basename
