@@ -2,7 +2,7 @@
 # Made by: Boris Bilc
 # Version: 0.1 (alpha)
 
-import modules.zip_archive
+import zip_archive
 import datetime
 from configparser import ConfigParser
 from colorama import init, Fore, Back, Style
@@ -128,4 +128,4 @@ readData()
 setDateTime()
 writeMetaHeader()
 formatPoint()
-modules.zip_archive.zipFilesInDir("ScanDataUnprocessed", "ScanDataPackages/test.zip")
+zip_archive.zipFilesInDir("ScanDataUnprocessed", "ScanDataPackages/test.zip")
