@@ -1,5 +1,5 @@
 # .github/workflows/main_app.yml
-name: Version Module 1
+name: Version Main App
 
 on:
   pull_request:
