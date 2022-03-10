@@ -1,6 +1,6 @@
 # Photogrammetry Point Report Generator
 # Made by: Boris Bilc
-# Version: 0.0.1 (alpha)
+# Version: 0.0.2 (alpha)
 
 import modlib.zip_archive as zip_archive
 import time
