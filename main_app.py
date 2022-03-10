@@ -1,6 +1,6 @@
 # Photogrammetry Point Report Generator
 # Made by: Boris Bilc
-# Version: 0.03 (alpha)
+# Version: 0.0.1 (alpha)
 
 import modlib.zip_archive as zip_archive
 import time
@@ -10,12 +10,13 @@ from colorama import init, Fore, Back, Style
 #init(autoreset=True)
 init(autoreset=True)
 
+version = '0.0.1'
 
 # Application start greeting
 print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "┌───────────────────────────────────────────────────────┐")
 print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "│         Photogrammetry Point Report Generator         │")
 print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "└───────────────────────────────────────────────────────┘")
-print("Version: 0.03 (alpha)")
+print("Version: " + version)
 time.sleep(1)
 
 # Read settings configuration from 'app_settings.ini'
