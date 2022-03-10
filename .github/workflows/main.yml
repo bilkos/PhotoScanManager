@@ -1,2 +1,2 @@
-- name: Automatic Versioning
-  uses: nicupavel/action-files-version-increment@v3
+name: Automatic Versioning
+uses: nicupavel/action-files-version-increment@v3
