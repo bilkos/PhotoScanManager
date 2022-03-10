@@ -25,6 +25,3 @@ jobs:
 
       - name: Git Version
         uses: codacy/git-version@2.2.0
-        with:
-          prefix: main_app-
-          log-path: logs/
