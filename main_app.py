@@ -15,6 +15,7 @@ init(autoreset=True)
 print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "┌───────────────────────────────────────────────────────┐")
 print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "│         Photogrammetry Point Report Generator         │")
 print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "└───────────────────────────────────────────────────────┘")
+print("Version: 0.03 (alpha)")
 time.sleep(1)
 
 # Read settings configuration from 'app_settings.ini'
