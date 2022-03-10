@@ -1,5 +1,5 @@
-name: Automatic Versioning
 on: [push]
+
 jobs:
   versioning_job:
     runs-on: ubuntu-latest
