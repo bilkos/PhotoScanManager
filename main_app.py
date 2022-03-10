@@ -10,7 +10,7 @@ from colorama import init, Fore, Back, Style
 #init(autoreset=True)
 init(autoreset=True)
 
-version = '0.0.1'
+version = '0.0.2'
 
 # Application start greeting
 print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "┌───────────────────────────────────────────────────────┐")
