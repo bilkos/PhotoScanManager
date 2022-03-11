@@ -11,7 +11,7 @@ from colorama import init, Fore, Back, Style
 #init(autoreset=True)
 init(autoreset=True)
 
-version = '0.0.13'
+version = '0.02'
 new_count = 0
 
 
