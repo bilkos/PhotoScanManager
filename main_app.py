@@ -11,7 +11,7 @@ from colorama import init, Fore, Back, Style
 #init(autoreset=True)
 init(autoreset=True)
 
-version = '0.02'
+version = '0.2.1'
 new_count = 0
 
 
@@ -177,11 +177,19 @@ def metaOptionsRead():
 	time_in = input(dnow.strftime("%H:%M"))
 	if time_in == "":
 		time_in = dnow.strftime("%H:%M")
-	meta_datetime = date_in + " - " + time_in
+	meta_datetime = date_in + " / " + time_in
 	time.sleep(0.5)
 
 	print(Style.RESET_ALL)
 	os.system('cls||clear')
+	
+	print(Fore.GREEN + "Worksite: " + meta_worksite)
+	print(Fore.GREEN + "Scan type: " + meta_scantype)
+	print(Fore.GREEN + "Scan detail: " + meta_scandet)
+	print(Fore.GREEN + "Station: " + meta_station)
+	print(Fore.GREEN + "Instrument: " + meta_instrument)
+	print(Fore.GREEN + "Surveyor: " + meta_surveyor)
+	print(Fore.GREEN + "Date / Time: " + meta_datetime)
 	
 
 
@@ -272,7 +280,6 @@ filedb_datasets = open("settings/new_dataset_folders.txt", "w")
 filedb_datasets.write("")
 filedb_pointfiles = open("settings/new_dataset_points.txt", "w")
 filedb_pointfiles.write("")
-
 
 
 # Get folder names for processing
@@ -374,7 +381,7 @@ def appStartup():
 		time.sleep(0.1)
 		metaOptionsRead()
 		time.sleep(0.1)
-		print("Scanning for new data in: " + path_scandata + "\n")
+		print("\nScanning for new data in: " + path_scandata + "\n")
 		scanFolders(path_scandata)
 		print(Fore.GREEN + "\nFound: " + str(new_count) + " folders with new data-sets...\n")
 		print("Process finished.")
