@@ -14,81 +14,9 @@ init(autoreset=True)
 version = '0.2.1'
 new_count = 0
 
-
-# Read settings configuration from 'app_settings.ini'
-def configSettingsRead():
-	global metadata_export, metadata_external, metadata_fixed, logfile, processed_db, ftp_upload, auto_upload, backup, backup_cleanup
-	global fixed_worksite, fixed_scan_type, fixed_scan_detail, fixed_instrument, fixed_surveyor, fixed_station
-	config = ConfigParser()
-	# instantiate
-	config = ConfigParser()
-
-	# parse existing file
-	config.read('settings/app_settings.ini')
-
-	# read values from a section
-	metadata_export = config.getboolean('METADATA', 'metadata_export')
-	metadata_external = config.getboolean('METADATA', 'metadata_external')
-	metadata_fixed = config.getboolean('METADATA', 'metadata_fixed')
-	logfile = config.getboolean('LOGS', 'logfile')
-	processed_db = config.getboolean('LOGS', 'processed_db')
-	ftp_upload = config.getboolean('UPLOAD', 'ftp_upload')
-	auto_upload = config.getboolean('UPLOAD', 'auto_upload')
-	backup = config.getboolean('BACKUP', 'backup')
-	backup_cleanup = config.getboolean('BACKUP', 'backup_cleanup')
-	fixed_worksite = config.get('METADATA', 'fixed_worksite')
-	fixed_scan_type = config.get('METADATA', 'fixed_scan_type')
-	fixed_scan_detail = config.get('METADATA', 'fixed_scan_detail')
-	fixed_instrument = config.get('METADATA', 'fixed_instrument')
-	fixed_surveyor = config.get('METADATA', 'fixed_surveyor')
-
-	print(Fore.GREEN + "SETTINGS: METADATA")
-	print(Fore.GREEN + "==================")
-	print(Fore.GREEN + "Enable Metadata: " + Fore.CYAN + Style.BRIGHT + str(metadata_export))
-	print(Fore.GREEN + "Create external file: " + Fore.CYAN + Style.BRIGHT + str(metadata_external))
-	print(Fore.GREEN + "Use fixed values: " + Fore.CYAN + Style.BRIGHT + str(metadata_fixed) + "\n")
-	if metadata_fixed == True:
-		print(Fore.GREEN + "\t" + "METADATA FIXED VALUES")
-		print(Fore.GREEN + "\t" + "=====================")
-		print(Fore.GREEN + "\t" + "Worksite: " + Fore.CYAN + Style.BRIGHT + str(fixed_worksite))
-		print(Fore.GREEN + "\t" + "Scan Type: " + Fore.CYAN + Style.BRIGHT + str(fixed_scan_type))
-		print(Fore.GREEN + "\t" + "Scan Detail: " + Fore.CYAN + Style.BRIGHT + str(fixed_scan_detail))
-		print(Fore.GREEN + "\t" + "Instrument: " + Fore.CYAN + Style.BRIGHT + str(fixed_instrument))
-		print(Fore.GREEN + "\t" + "Surveyor: " + Fore.CYAN + Style.BRIGHT + str(fixed_surveyor) + "\n")
-	time.sleep(0.2)
-	print(Fore.GREEN + "SETTINGS: LOGS")
-	print(Fore.GREEN + "==============")
-	print(Fore.GREEN + "Enable Logfile: " + Fore.CYAN + Style.BRIGHT + str(logfile))
-	print(Fore.GREEN + "Processed DB: " + Fore.CYAN + Style.BRIGHT + str(processed_db) + "\n")
-	time.sleep(0.2)
-	print(Fore.GREEN + "SETTINGS: FTP UPLOAD")
-	print(Fore.GREEN + "====================")
-	print(Fore.GREEN + "Enable FTP upload: " + Fore.CYAN + Style.BRIGHT + str(ftp_upload))
-	print(Fore.GREEN + "Auto upload: " + Fore.CYAN + Style.BRIGHT + str(auto_upload) + "\n")
-	time.sleep(0.2)
-	print(Fore.GREEN + "SETTINGS: BACKUP")
-	print(Fore.GREEN + "================")
-	print(Fore.GREEN + "Enable Backup: " + Fore.CYAN + Style.BRIGHT + str(backup))
-	print(Fore.GREEN + "Backup Cleanup: " + Fore.CYAN + Style.BRIGHT + str(backup_cleanup) + "\n")
-
-	# update existing value
-	#config.set('section_a', 'string_val', 'world')
-
-	# add a new section and some values
-
-	#config.add_section('section_b')
-	#config.set('section_b', 'meal_val', 'spam')
-	#config.set('section_b', 'not_found_val', '404')
-
-	# save to a file
-	#with open('test_update.ini', 'w') as configfile:
-	#	config.write(configfile)
-
-
 # Load settings from files in ./settings folder
 def metaOptionsRead():
 	global meta_worksite, meta_instrument, meta_station, meta_datetime, meta_surveyor, meta_scantype, meta_scandet
-	global f_worksite, f_instrument, f_surveyor, f_scantype, f_scandet
 
 	os.system('cls||clear')
 	
@@ -379,8 +307,9 @@ def appStartup():
 		time.sleep(0.1)
 		settingsRead()
 		time.sleep(0.1)
-		metaOptionsRead()
-		time.sleep(0.1)
+		if metadata_fixed == False:
+			metaOptionsRead()
+			time.sleep(0.1)
 		print("\nScanning for new data in: " + path_scandata + "\n")
 		scanFolders(path_scandata)
 		print(Fore.GREEN + "\nFound: " + str(new_count) + " folders with new data-sets...\n")
