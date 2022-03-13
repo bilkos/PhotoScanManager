@@ -295,7 +295,6 @@ def appStartup():
 	print(Fore.YELLOW + "└────────────────────┘\n")
 	
 	app_start = input(">>> ")
-	
 	if app_start == "s" or app_start == "S":
 		print(Fore.MAGENTA + Style.BRIGHT + "Settings Configuration...")
 	elif app_start == "q" or app_start == "Q":
