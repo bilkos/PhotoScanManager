@@ -4,8 +4,11 @@ Disclaimer!!! - __App is not operational as it's still in development__
 
 Application for managing scan data, with FTP uploading functionality.
 
-Written in Python 3\
-Python version: 3.10.2\
+- Language: __Python 3__\
+- Python version: __3.10.2__
+- Made by: __Boris B__
+
+---
 
 ## Python 3 - required modules
 
@@ -27,5 +30,3 @@ from zipfile import ZipFile
 from os.path import basename
 
 ```
-
-Made by: **Boris B**
