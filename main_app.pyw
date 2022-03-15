@@ -2,7 +2,6 @@
 # Made by: Boris Bilc
 
 
-from enum import auto
 import modlib.zip_archive as zip_archive
 import os
 import time
