@@ -6,6 +6,10 @@ import modlib.zip_archive as zip_archive
 import os
 import time
 import datetime
+
+import locale
+locale.setlocale(locale.LC_ALL, 'sl_SI')
+
 from configparser import ConfigParser
 
 # Import and initialize colorama module
@@ -14,34 +18,20 @@ init(autoreset=True)
 
 # Import and initialize PySimpleGUI module
 import PySimpleGUI as sg
-# Layout Theme
-sg.theme('SystemDefaultForReal')
+sg.theme('SystemDefault')		# GUI Color Theme (SystemDefaultForReal, Python, DarkGrey14)
 
-# Global app variables
-version = '0.2.1'		# App version
-new_count = 0
-process_start = False
+# Main App Configuration & Info
+version = '0.1 (build 56)'		# App version (build)
 app_settings_ini = 'settings/app_settings.ini'
 
+# Global app variables
+new_count = 0					# New datasets counter init
+process_start = False			# Start process initialize
+
 # Button colors
-#           LIGHT:      MEDIUM:     DARK:
-# GREEN:    #C0FF00		#6FAB39		#52792F
-# ORANGE:   #F2D58B		#D19728		#AD7100
-# RED:      #FF8A96		#A52A2A		#8B3232
-greenLight = "#C0FF00"
-greenMedium = "#6FAB39"
-greenDark = "#52792F"
-greenBtnColor = "#33d73e"
-
-orangeLight = "#F2D58B"
-orangeMedium = "#D19728"
-orangeDark = "#AD7100"
-orangeBtnColor = "#fabd1c"
-
-redLight = "#FF8A96"
-redMedium = "#A52A2A"
-redDark = "#8B3232"
-redBtnColor = "#fd5b49"
+greenBtnColor = "#00802b"
+orangeBtnColor = "#ff8000"
+redBtnColor = "#b30000"
 
 
 # Load settings from files in ./settings folder
@@ -141,23 +131,24 @@ def metaOptionsRead():
 		[sg.Input(default_text='n/a', s=(15,1), focus=True, key="meta_station")],
 		[sg.Text('Date:')],
 		[sg.Input(default_text=dnow.strftime("%Y-%m-%d"), key='meta_date', size=(12,1)), sg.Input(default_text=dnow.strftime("%H:%M"), key='meta_time', size=(6,1))],
-		[sg.CalendarButton('Date Picker', format='%Y-%m-%d', title = "Choose Date", key="meta_datepicker", target='meta_date')],
+		[sg.CalendarButton('Date Picker', format='%Y-%m-%d', title = "Choose Date", key="meta_datepicker", target='meta_date', button_color='#0088cc')],
 	]
 
 
 	layout_meta = [
-		[sg.Text("Choose values for metadata", font="Segoe+UI 12 bold")],
+		[sg.Text("METADATA - Choose options:", font="Segoe+UI 12 bold")],
 		[sg.HorizontalSeparator()],
 		[sg.vtop([sg.Col(layout_l), sg.Col(layout_r)])],
 		[sg.vtop([sg.Col(layout_l2), sg.Col(layout_r2)])],
 		[sg.vtop([sg.Col(layout_l3), sg.Col(layout_r3)])],
-		[sg.Button('[C]ontinue', key='CONT', button_color=greenBtnColor), sg.Button('[Q]uit', key='QUIT', button_color=redBtnColor)]
+		[sg.Save("Continue", key='CONT', focus=True, button_color=greenBtnColor), sg.Quit('Quit', key='QUIT', button_color=redBtnColor)]
+		# [sg.Button('[C]ontinue', key='CONT', button_color=greenBtnColor), sg.Button('[Q]uit', key='QUIT', button_color=redBtnColor)]
 	]
 	
-	window2 = sg.Window('Metadata options', layout_meta, finalize=True)
-	window2.Element('meta_station').SetFocus()
-	window2.bind('<c>', 'CONT')
-	window2.bind('<C>', 'CONT')
+	window2 = sg.Window('Metadata options', layout_meta, finalize=True, use_default_focus=False)
+	window2.Element('CONT').SetFocus()
+	window2.bind('<s>', 'CONT')
+	window2.bind('<s>', 'CONT')
 	window2.bind('<q>', 'QUIT')
 	window2.bind('<Q>', 'QUIT')
 	window2.bind('<Escape>', 'QUIT')
@@ -193,7 +184,7 @@ def metaOptionsRead():
 
 			
 			# Show results in a popup window
-			clicked = sg.popup_ok_cancel('Confirm selection...',
+			clicked = sg.popup('Confirm selection...',
 			'Worksite: ' + meta_worksite,
 			'Instrument: ' + meta_instrument,
 			'Surveyor: ' + meta_surveyor,
@@ -205,9 +196,6 @@ def metaOptionsRead():
 
 			if clicked == 'OK':
 				break
-			if clicked == 'Cancel':
-				window2.close()
-				metaOptionsRead()
 			if clicked == None:
 				appStartupMenu(False)
 
@@ -389,7 +377,7 @@ def appStartProcess():
 	print(Fore.GREEN + "Waiting for metadata user input...")
 	if metadata_fixed == False:
 		metaOptionsRead()
-		time.sleep(2)
+		
 	print(Fore.GREEN + "Metadata preared.\nStarting process...")
 	time.sleep(0.1)
 	print("\nScanning for new data in: " + path_scandata + "\n")
@@ -419,17 +407,17 @@ def appStartupMenu(process_start):
 	
 
 	layout = [
-		[sg.Text("Photogrammetry Report Manager", font='bold 16')],
+		[sg.Text("PHOTO-SCAN - Report Manager", font='Calibri 18 bold')],
+		[sg.Text("START MENU", font='Calibri 14 bold')],
 		[sg.HorizontalSeparator()],
-		[sg.Text("START MENU", font='bold 12')],
 		[sg.Text("Continue: Start report manager process...")],
 		[sg.Text("Settings: Edit app settings configuration.")],
 		[sg.Text("Quit: Close application.")],
-		[sg.Button("[C]ontinue", focus=True, key='RUN', button_color=greenBtnColor), sg.Button("[S]ettings", key='SET', button_color=orangeBtnColor, disabled=True), sg.VerticalSeparator(), sg.Button("[Q]uit", key='QUIT', button_color=redBtnColor)],
+		[sg.Button("Continue", focus=True, key='RUN', button_color=greenBtnColor), sg.Button("Settings", key='SET', disabled=True, button_color=orangeBtnColor), sg.VerticalSeparator(), sg.Button("Quit", key='QUIT', button_color=redBtnColor)],
 		]
 
 	# Create the window
-	window1 = sg.Window("PHOTO-SCAN Report Manager", layout, element_justification='c', finalize=True)
+	window1 = sg.Window("PHOTO-SCAN - Report Manager", layout, element_justification='c', finalize=True)
 	window1.Element('RUN').SetFocus()
 	window1.bind('<c>', 'RUN')
 	window1.bind('<C>', 'RUN')
