@@ -1,6 +1,6 @@
-# Photogrammetry Point Report Generator
+# Photogrammetry Scan Manager
 # Made by: Boris Bilc
-# Version: 0.0.1 (alpha)
+
 
 from enum import auto
 import modlib.zip_archive as zip_archive
@@ -8,31 +8,53 @@ import os
 import time
 import datetime
 from configparser import ConfigParser
+
+# Import and initialize colorama module
 from colorama import init, Fore, Back, Style
-#init(autoreset=True)
 init(autoreset=True)
 
+# Import and initialize PySimpleGUI module
 import PySimpleGUI as sg
+# Layout Theme
+sg.theme('SystemDefaultForReal')
 
-version = '0.2.1'
+# Global app variables
+version = '0.2.1'		# App version
 new_count = 0
 process_start = False
+app_settings_ini = 'settings/app_settings.ini'
+
+# Button colors
+#           LIGHT:      MEDIUM:     DARK:
+# GREEN:    #C0FF00		#6FAB39		#52792F
+# ORANGE:   #F2D58B		#D19728		#AD7100
+# RED:      #FF8A96		#A52A2A		#8B3232
+greenLight = "#C0FF00"
+greenMedium = "#6FAB39"
+greenDark = "#52792F"
+greenBtnColor = "#33d73e"
+
+orangeLight = "#F2D58B"
+orangeMedium = "#D19728"
+orangeDark = "#AD7100"
+orangeBtnColor = "#fabd1c"
+
+redLight = "#FF8A96"
+redMedium = "#A52A2A"
+redDark = "#8B3232"
+redBtnColor = "#fd5b49"
+
 
 # Load settings from files in ./settings folder
 def metaOptionsRead():
-	global meta_worksite, meta_instrument, meta_station, meta_datetime, meta_surveyor, meta_scantype, meta_scandet
+	global meta_worksite, meta_instrument, meta_station, meta_date, meta_time, meta_surveyor, meta_scantype, meta_scandet
 	
-	# Clear terminal screen
-	os.system('cls||clear')
-	
-	# Layout Theme
-	sg.theme('DarkGrey9')
-	# Read options for worksites
+	# Choose worksite
 	openfile = open("settings/worksite.txt", "r")
 	openfile_list = openfile.readlines()
 	openfile_i = 0
-	# Count options in 'worksite.txt'
-	for x_fw in openfile_list:
+	# Count options in opened file
+	for x in openfile_list:
 		openfile_list[openfile_i] = openfile_list[openfile_i].strip()
 		openfile_i = openfile_i + 1
 	openfile.close()
@@ -40,130 +62,159 @@ def metaOptionsRead():
 	layout_l = [
 		[sg.Text('Worksite:')],
 		# Create List object with options
-		[sg.Listbox(openfile_list, key='meta_worksite', no_scrollbar=True, s=(25, openfile_i), select_mode='LISTBOX_SELECT_MODE_SINGLE', auto_size_text=True)],
-		]
+		[sg.Listbox(openfile_list, default_values=openfile_list[0], key='meta_worksite', s=(25, openfile_i), select_mode='LISTBOX_SELECT_MODE_SINGLE', auto_size_text=True)],
+	]
 	
-	
-	'''
-	user_input = int(input("Choose option >>> "))
-	if user_input >= 0 and user_input <= openfile_i:
-			meta_worksite = str(openfile_list[user_input]).strip()
-			print(meta_worksite + " <- OK")
-	'''	
-	'''
-	# Choose instrument used
-	print(Fore.GREEN + "Instrument:")
+	# Choose instrument
 	openfile = open("settings/instrument.txt", "r")
 	openfile_list = openfile.readlines()
 	openfile_i = 0
-	for x_fw in openfile_list:
-		print(Fore.CYAN + "[" + str(openfile_i) + "] " + Style.BRIGHT + str(x_fw).strip())
+	# Count options in opened file
+	for x in openfile_list:
+		openfile_list[openfile_i] = openfile_list[openfile_i].strip()
 		openfile_i = openfile_i + 1
-	user_input = int(input("Choose option >>> "))
-	if user_input >= 0 and user_input <= openfile_i:
-			meta_instrument = str(openfile_list[user_input]).strip()
-			print(meta_instrument + " <- OK")
 	openfile.close()
+	# Prepare Layout (left column)
+	layout_l2 = [
+		[sg.Text('Instrument:')],
+		# Create List object with options
+		[sg.Listbox(openfile_list, default_values=openfile_list[0], key='meta_instrument', s=(25, openfile_i), select_mode='LISTBOX_SELECT_MODE_SINGLE', auto_size_text=True)],
+	]
 	
+		
 	# Choose surveyor name
-	print(Fore.GREEN + "Surveyor:")
 	openfile = open("settings/surveyor.txt", "r")
 	openfile_list = openfile.readlines()
 	openfile_i = 0
-	for x_fw in openfile_list:
-		print(Fore.CYAN + "[" + str(openfile_i) + "] " + Style.BRIGHT + str(x_fw).strip())
+	# Count options in opened file
+	for x in openfile_list:
+		openfile_list[openfile_i] = openfile_list[openfile_i].strip()
 		openfile_i = openfile_i + 1
-	user_input = int(input("Choose option >>> "))
-	if user_input >= 0 and user_input <= openfile_i:
-			meta_surveyor = str(openfile_list[user_input]).strip()
-			print(meta_surveyor + " <- OK")
 	openfile.close()
-	'''
-
+	# Prepare Layout (left column)
+	layout_l3 = [
+		[sg.Text('Surveyor:')],
+		# Create List object with options
+		[sg.Listbox(openfile_list, default_values=openfile_list[0], key='meta_surveyor', s=(25, openfile_i), select_mode='LISTBOX_SELECT_MODE_SINGLE', auto_size_text=True)],
+	]
+	
 	
 	# Choose type of scan
 	openfile = open("settings/scan_type.txt", "r")
 	openfile_list = openfile.readlines()
 	openfile_i = 0
 	# Count options in 'scan_type.txt'
-	for x_fw in openfile_list:
+	for x in openfile_list:
 		openfile_list[openfile_i] = openfile_list[openfile_i].strip()
 		openfile_i = openfile_i + 1
 	openfile.close()
 	# Prepare Layout (left column)
 	layout_r = [
-			[sg.Text('Scan type:')],
-			# Create List object with options
-			[sg.Listbox(openfile_list, key="meta_scantype", no_scrollbar=True, s=(25, openfile_i), select_mode='LISTBOX_SELECT_MODE_SINGLE', auto_size_text=True)],
-			]	
+		[sg.Text('Scan type:')],
+		# Create List object with options
+		[sg.Listbox(openfile_list, default_values=openfile_list[0], key="meta_scantype", s=(25, openfile_i), select_mode='LISTBOX_SELECT_MODE_SINGLE', auto_size_text=True)],
+	]	
 
-	'''
+	
 	# Choose type of scan detail
-	print(Fore.GREEN + "Scan detail:")
 	openfile = open("settings/scan_detail.txt", "r")
 	openfile_list = openfile.readlines()
 	openfile_i = 0
-	for x_fw in openfile_list:
-		print(Fore.CYAN + "[" + str(openfile_i) + "] " + Style.BRIGHT + str(x_fw).strip())
+	# Count options in 'scan_type.txt'
+	for x in openfile_list:
+		openfile_list[openfile_i] = openfile_list[openfile_i].strip()
 		openfile_i = openfile_i + 1
-	user_input = int(input("Choose option >>> "))
-	if user_input >= 0 and user_input <= openfile_i:
-			meta_scandet = str(openfile_list[user_input]).strip()
-			print(meta_scandet + " <- OK")
 	openfile.close()
-	
-	# Enter station of scanned profile
-	print(Fore.GREEN + "Station of scanned profile:")
-	meta_station = input("Enter scan station (XX+XXX.XX) >>> ")
-	print(str(meta_station) + " <- OK")
+	# Prepare Layout (left column)
+	layout_r2 = [
+		[sg.Text('Scan detail:')],
+		# Create List object with options
+		[sg.Listbox(openfile_list, default_values=openfile_list[0], key="meta_scandet", s=(25, openfile_i), select_mode='LISTBOX_SELECT_MODE_SINGLE', auto_size_text=True)],
+	]	
 
-	# Enter Date and Time for new export
+
 	dnow = datetime.datetime.now()
-	print("\n" + Fore.YELLOW + "Enter Date of scan (Format= YYYY-MM-DD) >>> ")
-	date_in = input(dnow.strftime("%Y-%m-%d"))
-	if date_in == "":
-		date_in = dnow.strftime("%Y-%m-%d")
-	print(Fore.YELLOW + "Enter Time of scan (Format= HH:MM) >>> ")
-	time_in = input(dnow.strftime("%H:%M"))
-	if time_in == "":
-		time_in = dnow.strftime("%H:%M")
-	meta_datetime = date_in + " / " + time_in
-	'''
 	
+
+	# Enter station of scanned profile / Date and Time for new export
+	layout_r3 = [
+		[sg.Text('Station (##+###.#):')],
+		[sg.Input(default_text='n/a', s=(15,1), focus=True, key="meta_station")],
+		[sg.Text('Date:')],
+		[sg.Input(default_text=dnow.strftime("%Y-%m-%d"), key='meta_date', size=(12,1)), sg.Input(default_text=dnow.strftime("%H:%M"), key='meta_time', size=(6,1))],
+		[sg.CalendarButton('Date Picker', format='%Y-%m-%d', title = "Choose Date", key="meta_datepicker", target='meta_date')],
+	]
+
+
 	layout_meta = [
-		[sg.Col(layout_l), sg.Col(layout_r)],
-		[sg.Button('OK'),sg.Button('Quit')]
-		]
+		[sg.Text("Choose values for metadata", font="Segoe+UI 12 bold")],
+		[sg.HorizontalSeparator()],
+		[sg.vtop([sg.Col(layout_l), sg.Col(layout_r)])],
+		[sg.vtop([sg.Col(layout_l2), sg.Col(layout_r2)])],
+		[sg.vtop([sg.Col(layout_l3), sg.Col(layout_r3)])],
+		[sg.Button('[C]ontinue', key='CONT', button_color=greenBtnColor), sg.Button('[Q]uit', key='QUIT', button_color=redBtnColor)]
+	]
 	
-	window2 = sg.Window('Metadata options', layout_meta, finalize=True, keep_on_top=True)
-	
+	window2 = sg.Window('Metadata options', layout_meta, finalize=True)
+	window2.Element('meta_station').SetFocus()
+	window2.bind('<c>', 'CONT')
+	window2.bind('<C>', 'CONT')
+	window2.bind('<q>', 'QUIT')
+	window2.bind('<Q>', 'QUIT')
+	window2.bind('<Escape>', 'QUIT')
+
 	while True:
 		event, values = window2.read()
 		
 		# End program if user closes window or
 		# presses the OK button
-		if event == "OK":
+		if event == "CONT":
 			replace_chars = "'[]"
 			process_start = True
 			window2.close()
+			
 			meta_worksite = str(values['meta_worksite'])
+			meta_instrument = str(values['meta_instrument'])
+			meta_surveyor = str(values['meta_surveyor'])
 			meta_scantype = str(values['meta_scantype'])
+			meta_scandet = str(values['meta_scandet'])
+			meta_station = str(values['meta_station'])
+			meta_date = str(values['meta_date'])
+			meta_time = str(values['meta_time'])
+
 			for replace_chars in replace_chars:
 				meta_worksite = meta_worksite.replace(replace_chars, '')
+				meta_instrument = meta_instrument.replace(replace_chars, '')
+				meta_surveyor = meta_surveyor.replace(replace_chars, '')
 				meta_scantype = meta_scantype.replace(replace_chars, '')
-			# Show results in a popup window
-			sg.popup('Confirm selection...',
-			'Worksite: ' + meta_worksite,
-			#'Instrument: ', values['meta_instrument'],
-			#'Surveyor: ', values['meta_surveyor'],
-			'Scan type: ' + meta_scantype,
-			#'Scan detail: ', values['meta_scandet'],
-			#'Station: ', values['meta_station'],
-			#'Date / Time: ', values['meta_datetime']
-			title='Confirm metadata options',)
-			appStartProcess()
+				meta_scandet = meta_scandet.replace(replace_chars, '')
+				meta_station = meta_station.replace(replace_chars, '')
+				meta_date = meta_date.replace(replace_chars, '')
+				meta_time = meta_time.replace(replace_chars, '')
 
-		if event == "Quit":
+			
+			# Show results in a popup window
+			clicked = sg.popup_ok_cancel('Confirm selection...',
+			'Worksite: ' + meta_worksite,
+			'Instrument: ' + meta_instrument,
+			'Surveyor: ' + meta_surveyor,
+			'Scan type: ' + meta_scantype,
+			'Scan detail: ' + meta_scandet,
+			'Station: ' + meta_station,
+			'Date / Time: ' + meta_date + ' / ' + meta_time,
+			title='Confirm metadata options')
+
+			if clicked == 'OK':
+				break
+			if clicked == 'Cancel':
+				window2.close()
+				metaOptionsRead()
+			if clicked == None:
+				appStartupMenu(False)
+
+			window2.close()
+
+		if event == "QUIT":
 			print(Fore.RED + Style.BRIGHT + "\n\nExiting app...\n\nGood bye!\n")
 			process_start = False
 			quit()
@@ -172,52 +223,7 @@ def metaOptionsRead():
 			break
 
 	window2.close()
-	time.sleep(0.5)
-	
-	# print(Style.RESET_ALL)
-	os.system('cls||clear')
-	'''
-	print(Fore.GREEN + "Worksite: " + meta_worksite)
-	print(Fore.GREEN + "Scan type: " + meta_scantype)
-	print(Fore.GREEN + "Scan detail: " + meta_scandet)
-	print(Fore.GREEN + "Station: " + meta_station)
-	print(Fore.GREEN + "Instrument: " + meta_instrument)
-	print(Fore.GREEN + "Surveyor: " + meta_surveyor)
-	print(Fore.GREEN + "Date / Time: " + meta_datetime)
-	'''
 
-def appOptionsMenuGUI(process_start):
-	sg.theme('DarkGrey9')
-
-	layout = [
-		[sg.Text("Photogrammetry Report Manager")],
-		[sg.Text(".:: START MENU ::.\n\nChoose option...")],
-		[sg.Button("Enter"),sg.Button("Settings"),sg.Button("Quit")]
-		]
-
-	# Create the window
-	window = sg.Window("PHOTO-SCAN Report Manager", layout)
-
-	# Create an event loop
-	while True:
-		event, values = window.read()
-		
-		# End program if user closes window or
-		# presses the OK button
-		if event == "Enter":
-			process_start = True
-			window.close()
-			appStartProcess()
-		if event == "Quit":
-			print(Fore.RED + Style.BRIGHT + "\n\nExiting app...\n\nGood bye!\n")
-			process_start = False
-			break
-		if event == sg.WIN_CLOSED and process_start == False:
-			print(Fore.RED + Style.BRIGHT + "\n\nExiting app...\n\nGood bye!\n")
-			break
-
-	window.close()		
-	quit()
 
 # Read active settings 
 def settingsRead():
@@ -233,7 +239,7 @@ def settingsRead():
 	config = ConfigParser()
 
 	# Read settings from 'app_settings.ini' and parse them as variables 
-	config.read('settings/app_settings.ini')
+	config.read(app_settings_ini)
 
 	path_scandata = config.get('FOLDERS', 'path_scandata')
 	path_packages = config.get('FOLDERS', 'path_packages')
@@ -253,6 +259,7 @@ def settingsRead():
 	fixed_instrument = config.get('METADATA', 'fixed_instrument')
 	fixed_surveyor = config.get('METADATA', 'fixed_surveyor')
 
+	'''
 	# Print current settings at app startup
 	print(Fore.GREEN + "SETTINGS: FOLDERS")
 	print(Fore.GREEN + "==================")
@@ -287,6 +294,7 @@ def settingsRead():
 	print(Fore.GREEN + "================")
 	print(Fore.GREEN + "Enable Backup: " + Fore.CYAN + Style.BRIGHT + str(backup))
 	print(Fore.GREEN + "Backup Cleanup: " + Fore.CYAN + Style.BRIGHT + str(backup_cleanup) + "\n")
+	'''
 
 	# update existing value
 	#config.set('section_a', 'string_val', 'world')
@@ -371,19 +379,66 @@ def processNewData():
 	metaExport()
 	pointFormat()
 	#packDataset()
+	print("Process finished.")
+	process_start = False
+	time.sleep(1)
+	appStartupMenu(process_start)
+
+
+# Start main process
+def appStartProcess():
+	print(Fore.GREEN + "Waiting for metadata user input...")
+	if metadata_fixed == False:
+		metaOptionsRead()
+		time.sleep(2)
+	print(Fore.GREEN + "Metadata preared.\nStarting process...")
+	time.sleep(0.1)
+	print("\nScanning for new data in: " + path_scandata + "\n")
+	scanFolders(path_scandata)
+	print(Fore.GREEN + "\nFound: " + str(new_count) + " folders with new data-sets...\n")
+	processNewData()
 
 
 def appStartupMenu(process_start):
-	sg.theme('DarkGrey9')
+	# Clear terminal screen on startup
+	os.system('cls||clear')
+	# Application start greeting
+	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "┌─────────────────────────────────────────────┐")
+	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "│                                             │")
+	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "│          PHOTO-SCAN Report Manager          │")
+	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "│       -------------------------------       │")
+	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "│      Made by Boris Bilc / CELU, d.o.o.      │")
+	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "│                                             │")
+	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "└─────────────────────────────────────────────┘")
+	print(Fore.BLUE + Style.BRIGHT + " App Version: " + str(version))
+	time.sleep(0.1)
+	# Load main app settings
+	print(Fore.GREEN + "Loading Settings File: " + app_settings_ini)
+	time.sleep(0.2)
+	settingsRead()
+	print(Fore.GREEN + "Loading Settings... Done.\n")
+	
 
 	layout = [
-		[sg.Text("Photogrammetry Report Manager")],
-		[sg.Text(".:: START MENU ::.\n\nChoose option...")],
-		[sg.Button("Start"),sg.Button("Settings"),sg.Button("Quit")]
+		[sg.Text("Photogrammetry Report Manager", font='bold 16')],
+		[sg.HorizontalSeparator()],
+		[sg.Text("START MENU", font='bold 12')],
+		[sg.Text("Continue: Start report manager process...")],
+		[sg.Text("Settings: Edit app settings configuration.")],
+		[sg.Text("Quit: Close application.")],
+		[sg.Button("[C]ontinue", focus=True, key='RUN', button_color=greenBtnColor), sg.Button("[S]ettings", key='SET', button_color=orangeBtnColor, disabled=True), sg.VerticalSeparator(), sg.Button("[Q]uit", key='QUIT', button_color=redBtnColor)],
 		]
 
 	# Create the window
-	window1 = sg.Window("PHOTO-SCAN Report Manager", layout)
+	window1 = sg.Window("PHOTO-SCAN Report Manager", layout, element_justification='c', finalize=True)
+	window1.Element('RUN').SetFocus()
+	window1.bind('<c>', 'RUN')
+	window1.bind('<C>', 'RUN')
+	window1.bind('<s>', 'SET')
+	window1.bind('<S>', 'SET')
+	window1.bind('<q>', 'QUIT')
+	window1.bind('<Q>', 'QUIT')
+	window1.bind('<Escape>', 'QUIT')
 
 	# Create an event loop
 	while True:
@@ -391,11 +446,15 @@ def appStartupMenu(process_start):
 		
 		# End program if user closes window or
 		# presses the OK button
-		if event == "Start":
+		if event == "RUN":
 			process_start = True
 			window1.close()
 			appStartProcess()
-		if event == "Quit":
+		if event == "SETTINGS":
+			process_start = True
+			window1.close()
+			appStartProcess()
+		if event == "QUIT":
 			print(Fore.RED + Style.BRIGHT + "\n\nExiting app...\n\nGood bye!\n")
 			process_start = False
 			break
@@ -405,54 +464,6 @@ def appStartupMenu(process_start):
 
 	window1.close()		
 	quit()
-
-
-def appStartProcess():
-	# Application start greeting
-	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "┌─────────────────────────────────────────────┐")
-	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "│                                             │")
-	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "│          PHOTO-SCAN Report Manager          │")
-	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "│       -------------------------------       │")
-	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "│      Made by Boris Bilc / CELU, d.o.o.      │")
-	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "│                                             │")
-	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "└─────────────────────────────────────────────┘")
-	print(Fore.BLUE + Style.BRIGHT + " App Version: " + version + "\n")
-	time.sleep(0.25)
-	
-	'''
-	print(Fore.YELLOW + "┌────────────────────┐")
-	print(Fore.YELLOW + "│ .:: START MENU ::. │")
-	print(Fore.YELLOW + "│--------------------│")
-	print(Fore.YELLOW + "│ ("+ Style.BRIGHT + "Enter" + Fore.YELLOW + Style.DIM + ") Continue   │")
-	print(Fore.YELLOW + "│ ("+ Style.BRIGHT + "S" + Fore.YELLOW + Style.DIM + ") Settings       │")
-	print(Fore.YELLOW + "│ ("+ Style.BRIGHT + "Q" + Fore.YELLOW + Style.DIM + ") Quit           │")
-	print(Fore.YELLOW + "└────────────────────┘\n")
-	
-	print(Fore.YELLOW + "Press (Enter) to start processing... or (Q)uit.")
-	app_start = input(">>> ")
-	if app_start == "q" or app_start == "Q":
-		print(Fore.RED + Style.BRIGHT + "\n\nExiting app...\n\nGood bye!\n")
-		quit()
-	else:
-	'''
-		
-	print(Fore.GREEN + "Starting process...")
-	print(Fore.GREEN + "\nLoading Settings...\n")
-	time.sleep(0.1)
-	settingsRead()
-	time.sleep(0.1)
-	if metadata_fixed == False:
-		metaOptionsRead()
-		time.sleep(0.1)
-	print("\nScanning for new data in: " + path_scandata + "\n")
-	scanFolders(path_scandata)
-	print(Fore.GREEN + "\nFound: " + str(new_count) + " folders with new data-sets...\n")
-	processNewData()
-	time.sleep(1)
-	print("Process finished.")
-	process_start = False
-	appStartupMenu(process_start)
-
 
 # Start App by opening Start Menu
 appStartupMenu(process_start)
