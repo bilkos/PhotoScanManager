@@ -1,6 +1,8 @@
 # Photogrammetry Scan Manager
 # Made by: Boris Bilc
 
+# <!#FV> 0.1.58 </#FV>
+
 # IMPORT MODULES & GENERAL VARIABLES
 from email.mime import image
 import modlib.zip_archive as zip_archive
