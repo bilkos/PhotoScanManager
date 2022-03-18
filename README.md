@@ -1,4 +1,6 @@
-# Photo Scan Manager :: About
+# Photo Scan Manager
+
+## :: About
 
 Disclaimer!!! - __App is not operational as it's still in development__
 
@@ -14,20 +16,24 @@ Application for managing scan data, with FTP uploading functionality.
 ## Python 3 - required modules
 
 ```python
+# General modules
 import os
 import time
 import datetime
+import locale
+import subprocess
+
+# Additional modules
 from configparser import ConfigParser
-
-# Import and initialize colorama module
 from colorama import init, Fore, Back, Style
-init(autoreset=True)
-
-# Import and initialize PySimpleGUI module
 import PySimpleGUI as sg
 
-# Import zip module, and required dependancies
+# Zip module, and required dependancies
 from zipfile import ZipFile
 from os.path import basename
+
+# Initialize colorama module
+init(autoreset=True)
+
 
 ```
