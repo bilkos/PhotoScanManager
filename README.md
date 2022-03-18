@@ -1,6 +1,6 @@
-# Photo Scan Manager
+# .: Photo Scan Manager :.
 
-## :: About
+## About
 
 Disclaimer!!! - __App is not operational as it's still in development__
 
