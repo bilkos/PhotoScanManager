@@ -1,10 +1,10 @@
 # .: Photo Scan Manager :.
 
+Application for managing scan data, with FTP uploading functionality.
+
 ## About
 
 Disclaimer!!! - __App is not operational as it's still in development__
-
-Application for managing scan data, with FTP uploading functionality.
 
 - Language: __Python 3__
 - Python version: __3.10.2__
