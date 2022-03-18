@@ -25,10 +25,13 @@ locale.setlocale(locale.LC_ALL, 'sl_SI')
 sg.theme('SystemDefaultForReal')		# GUI Color Theme (SystemDefaultForReal, Python, DarkGrey14)
 
 # Button colors
-greenBtnColor = "#b3ff00"
+greenBtnColor = "#4cb000"
 blueBtnColor = "#59acff"
-orangeBtnColor = "#ffc800"
-redBtnColor = "#fa5757"
+orangeBtnColor = "#ff9900"
+redBtnColor = "#b00000"
+titleColor = '#ff8c00'
+textColWhite = '#ffffff'
+textColBlack = '#000000'
 
 # Default App Font for GUI
 app_font_title = 'Bahnschrift 20 bold'
@@ -54,11 +57,6 @@ imgb64_browse = b''
 with open(img_browseFolders, "rb") as image2string:
     imgb64_browse = base64.b64encode(image2string.read())
 # print(imgb64_browse)
-
-
-# Global app variables
-new_count = 0					# New datasets counter init
-process_start = False			# Start process initialize
 
 
 # Read active settings 
@@ -149,36 +147,39 @@ def editSettings():
 	layout_data = [
 		[sg.Text("Working folders", font=app_font_subtitle, text_color='#0d3e8c')],
 		[sg.HorizontalSeparator()],
-		[sg.Text('Scan Data:\t', font=font_btn_browse2),
-		sg.Input(default_text=str(path_scandata), key='PATH_DATA', s=(30,1)), 
+		[sg.Text('Scan Data:', font=font_btn_browse2), sg.Push(),
+		sg.Input(default_text=str(path_scandata), key='PATH_DATA', s=(40,1)), 
 		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF1', tooltip='Browse folders...'), 
-		btn1
-		],
-		[sg.Text('Processed Data:\t', font=font_btn_browse2),
-		sg.Input(default_text=str(path_packages), key='PATH_PROC', s=(30,1)), 
+		btn1],
+		[sg.Text("^ Location where new data is stored", font=font_btn_browse, pad=(130,0), text_color='#0d3e8c')],
+		[sg.HorizontalSeparator(color='#ffffff')],
+		[sg.Text('Processed Data:', font=font_btn_browse2), sg.Push(),
+		sg.Input(default_text=str(path_packages), key='PATH_PROC', s=(40,1)), 
 		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF2', tooltip='Browse folders...'), 
-		btn2
-		],
-		[sg.Text('Backup Location:\t', font=font_btn_browse2),
-		sg.Input(default_text=str(path_backup), key='PATH_BACKUP', s=(30,1)), 
+		btn2],
+		[sg.Text("^ Location where processed data is stored", font=font_btn_browse, pad=(130,0), text_color='#0d3e8c')],
+		[sg.HorizontalSeparator(color='#ffffff')],
+		[sg.Text('Backups:', font=font_btn_browse2), sg.Push(),
+		sg.Input(default_text=str(path_backup), key='PATH_BACKUP', s=(40,1)), 
 		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF3', tooltip='Browse folders...'), 
-		btn3
-		],
-	]
+		btn3],
+		[sg.Text("^ Location where backups are stored", font=font_btn_browse, pad=(130,0), text_color='#0d3e8c')],
+		[sg.HorizontalSeparator(color='#ffffff')],
+		]
 
 
 	layout_meta = [
 		[sg.Text("Metadata", font=app_font_subtitle, text_color='#0d3e8c')],
 		[sg.HorizontalSeparator()],
-		[sg.Checkbox('Metadata export', default=metadata_export, checkbox_color='#2d5ba6', key='META_EXP')],
-		[sg.Checkbox('Write to external filet', default=metadata_external, checkbox_color='#2d5ba6', key='META_EXT')],
-		[sg.Checkbox('Use fixed values', default=metadata_fixed, checkbox_color='#2d5ba6', key='META_FIX')],
-	]
+		[sg.Checkbox('Metadata export', default=metadata_export, checkbox_color='#2d5ba6', key='META_EXP', tooltip='Export metadata to point file header.')],
+		[sg.Checkbox('Write to external file', default=metadata_external, checkbox_color='#2d5ba6', key='META_EXT', tooltip='Write metadata to a separate file. Will not write to header.')],
+		]
 	
 
 	layout_metafix = [
 		[sg.Text("Metadata: Fixed Values", font=app_font_subtitle, text_color='#0d3e8c')],
 		[sg.HorizontalSeparator()],
+		[sg.Checkbox('Use fixed values', default=metadata_fixed, checkbox_color='#2d5ba6', key='META_FIX', tooltip='Enable to use fixed values, and disable metadata options before processing.')],
 		[sg.Text('Worksite\t'), sg.Push(), sg.Input(default_text=fixed_worksite, background_color='#fffba6', s=(25,1), key='FIX_1')],
 		[sg.Text('Scan typ\t'), sg.Push(), sg.Input(default_text=fixed_scan_type, background_color='#fffba6', s=(25,1), key='FIX_2')],
 		[sg.Text('Scan det\t'), sg.Push(), sg.Input(default_text=fixed_scan_detail, background_color='#fffba6', s=(25,1), key='FIX_3')],
@@ -190,16 +191,16 @@ def editSettings():
 	layout_logs = [
 		[sg.Text("Logging", font=app_font_subtitle, text_color='#0d3e8c')],
 		[sg.HorizontalSeparator()],
-		[sg.Checkbox('Log file', default=logfile, checkbox_color='#2d5ba6', key='LOG_FILE')],
-		[sg.Checkbox('Log processed', default=processed_db, checkbox_color='#2d5ba6', key='LOG_PROC')],
+		[sg.Checkbox('Log events', default=logfile, checkbox_color='#2d5ba6', key='LOG_FILE')],
+		[sg.Checkbox('Log processed files', default=processed_db, checkbox_color='#2d5ba6', key='LOG_PROC')],
 	]
 
 
 	layout_ftp = [
 		[sg.Text("FTP Uploading", font=app_font_subtitle, text_color='#0d3e8c')],
 		[sg.HorizontalSeparator()],
-		[sg.Checkbox('FZP uploade', default=ftp_upload, checkbox_color='#2d5ba6', key='FTP_UPL')],
-		[sg.Checkbox('Auto-upload', default=auto_upload, checkbox_color='#2d5ba6', key='FTP_AUTO')],
+		[sg.Checkbox('FTP Upload', default=ftp_upload, checkbox_color='#2d5ba6', key='FTP_UPL')],
+		[sg.Checkbox('Auto-Upload', default=auto_upload, checkbox_color='#2d5ba6', key='FTP_AUTO')],
 	]
 
 
@@ -210,26 +211,23 @@ def editSettings():
 		[sg.Checkbox('Cleanup processed', default=backup_cleanup, checkbox_color='#2d5ba6', key='BCKP_CLN')],
 	]
 
-	layout_vsep = [[sg.VerticalSeparator()]]
-	
+
 	layout_main = [
-		[sg.Text("Settings", font=app_font_title, text_color=blueBtnColor)],
+		[sg.Text("PHOTO-SCAN Manager :: Settings", font=app_font_title, text_color=titleColor)],
 		[sg.HorizontalSeparator()],
 		[sg.vtop([sg.Col(layout_data)])],
 		[sg.vtop([sg.Col(layout_ftp), sg.Col([[sg.VerticalSeparator()]]), sg.Col(layout_logs), sg.Col([[sg.VerticalSeparator()]]), sg.Col(layout_backup)])],
 		[sg.vtop([sg.Col(layout_meta), sg.Col([[sg.VerticalSeparator()]]), sg.Col(layout_metafix)])],
-		[sg.Button("Save & Close", key='SAVE', focus=True, button_color=greenBtnColor), sg.Cancel('Back', key='BACK', button_color=orangeBtnColor), sg.Quit('Quit', key='QUIT', button_color=redBtnColor)]
+		[sg.Button("Save & Close", key='SAVE', focus=True, button_color=(textColWhite,greenBtnColor), border_width=0), sg.Button('Close', key='QUIT', button_color=(textColWhite,orangeBtnColor), border_width=0)]
 		# [sg.Button('[C]ontinue', key='CONT', button_color=greenBtnColor), sg.Button('[Q]uit', key='QUIT', button_color=redBtnColor)]
 	]
 	
 	windowSettings = sg.Window('PhotoScan Manager - Settings', layout_main, use_default_focus=False, font=app_font, finalize=True)
 	windowSettings.Element('SAVE').SetFocus()
-	windowSettings.bind('<c>', 'SAVE')
-	windowSettings.bind('<c>', 'SAVE')
-	windowSettings.bind('<b>', 'BACK')
-	windowSettings.bind('<b>', 'BACK')
-	windowSettings.bind('<q>', 'QUIT')
-	windowSettings.bind('<q>', 'QUIT')
+	windowSettings.bind('<s>', 'SAVE')
+	windowSettings.bind('<S>', 'SAVE')
+	windowSettings.bind('<c>', 'QUIT')
+	windowSettings.bind('<C>', 'QUIT')
 	windowSettings.bind('<Escape>', 'QUIT')
 
 	# Create an event loop
@@ -268,12 +266,9 @@ def editSettings():
 
 			updateSettingsFile()
 			windowSettings.close()
-			
-		if event == "SETTINGS":
-			windowSettings.close()
+			quit()
 			
 		if event == "QUIT" or event == sg.WIN_CLOSED:
-			print(Fore.RED + Style.BRIGHT + "\n\nExiting app...\n\nGood bye!\n")
 			quit()
 			
 # Start settings editor

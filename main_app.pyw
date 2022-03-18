@@ -10,6 +10,7 @@ import os
 import time
 import datetime
 import locale
+import subprocess
 from configparser import ConfigParser
 from colorama import init, Fore, Back, Style
 import PySimpleGUI as sg
@@ -30,9 +31,7 @@ app_font_ver = 'Bahnschrift 9 bold'
 app_font = 'Bahnschrift 11'
 sg.set_options(font=app_font)
 
-# Main App Configuration & Info
-app_version = '0.1'		# App version (build)
-app_build = '57'
+# Main App Configuration file
 app_settings_ini = 'settings/app_settings.ini'
 
 # Global app variables
@@ -40,11 +39,13 @@ new_count = 0					# New datasets counter init
 process_start = False			# Start process initialize
 
 # Button colors
-greenBtnColor = "#b3ff00"
+greenBtnColor = "#4cb000"
 blueBtnColor = "#59acff"
-orangeBtnColor = "#ffc800"
-redBtnColor = "#fa5757"
-
+orangeBtnColor = "#ff9900"
+redBtnColor = "#b00000"
+titleColor = '#ff8c00'
+textColWhite = '#ffffff'
+textColBlack = '#000000'
 
 # Load settings from files in ./settings folder
 def metaOptionsRead():
@@ -138,14 +139,14 @@ def metaOptionsRead():
 	dnow = datetime.datetime.now()
 	# Enter station of scanned profile / Date and Time for new export
 	layout_station = [
-		[sg.Text('Station (##+###.#):')],
-		[sg.Input(default_text='n/a', s=(15,1), focus=True, key="meta_station")],
+		[sg.Text('Station (00+000.00):')],
+		[sg.Input(default_text='00+000.00', s=(15,1), focus=True, key="meta_station")],
 	]
 
 	layout_date = [
 		[sg.Text('Date & Time:')],
+		[sg.CalendarButton('Date Picker', format='%Y-%m-%d', title = "Choose Date", key="meta_datepicker", target='meta_date', button_color=('#ffffff',blueBtnColor))],
 		[sg.Input(default_text=dnow.strftime("%Y-%m-%d"), key='meta_date', size=(12,1)), sg.Input(default_text=dnow.strftime("%H:%M"), key='meta_time', size=(6,1))],
-		[sg.CalendarButton('Date Picker', format='%Y-%m-%d', title = "Choose Date", key="meta_datepicker", target='meta_date', button_color=blueBtnColor)],
 	]
 
 
@@ -154,13 +155,13 @@ def metaOptionsRead():
 		[sg.HorizontalSeparator()],
 		[sg.vtop([sg.Col(layout_work), sg.Col(layout_inst)])],
 		[sg.vtop([sg.Col(layout_scantype), sg.Col(layout_surveyor)])],
-		[sg.vtop([sg.Col(layout_scandet)])],
-		[sg.vtop([sg.Col(layout_station), sg.Col(layout_date)])],
-		[sg.Save("Continue", key='CONT', focus=True, button_color=greenBtnColor), sg.Cancel('Back', key='BACK', button_color=orangeBtnColor), sg.Quit('Quit', key='QUIT', button_color=redBtnColor)]
+		[sg.vtop([sg.Col(layout_scandet), sg.Col(layout_date)])],
+		[sg.vtop([sg.Col(layout_station)])],
+		[sg.Button("Continue", key='CONT', focus=True, button_color=(textColWhite,greenBtnColor), border_width=0), sg.Button('Back', key='BACK', button_color=(textColWhite,orangeBtnColor), border_width=0), sg.Button('Quit', key='QUIT', button_color=(textColWhite,redBtnColor), border_width=0)]
 		# [sg.Button('[C]ontinue', key='CONT', button_color=greenBtnColor), sg.Button('[Q]uit', key='QUIT', button_color=redBtnColor)]
 	]
 	
-	window2 = sg.Window('Metadata options', layout_meta, use_default_focus=False, font=app_font, finalize=True)
+	window2 = sg.Window('PhotoScan Manager - Metadata', layout_meta, use_default_focus=False, font=app_font, finalize=True)
 	window2.Element('CONT').SetFocus()
 	window2.bind('<c>', 'CONT')
 	window2.bind('<c>', 'CONT')
@@ -177,8 +178,7 @@ def metaOptionsRead():
 		# presses the OK button
 		if event == "CONT":
 			replace_chars = "'[]"
-			process_start = True
-			window2.close()
+			window2.hide()
 			
 			meta_worksite = str(values['meta_worksite'])
 			meta_instrument = str(values['meta_instrument'])
@@ -201,7 +201,7 @@ def metaOptionsRead():
 
 			
 			# Show results in a popup window
-			clicked = sg.popup('Confirm selection...',
+			clicked = sg.popup_ok_cancel('ENTERED METADATA:\n',
 			'Worksite: ' + meta_worksite,
 			'Instrument: ' + meta_instrument,
 			'Surveyor: ' + meta_surveyor,
@@ -209,14 +209,17 @@ def metaOptionsRead():
 			'Scan detail: ' + meta_scandet,
 			'Station: ' + meta_station,
 			'Date / Time: ' + meta_date + ' / ' + meta_time,
-			title='Confirm metadata options')
+			title='Confirm metadata options', button_color=('#ffffff','#226ab3'))
 
 			if clicked == 'OK':
+				process_start = True
+				window2.close()
 				break
+			if clicked == 'Cancel':
+				window2.un_hide()
 			if clicked == None:
 				appStartupMenu(False)
 
-			window2.close()
 
 		if event == "BACK":
 			window2.close()
@@ -266,56 +269,6 @@ def settingsRead():
 	fixed_scan_detail = config.get('METADATA', 'fixed_scan_detail')
 	fixed_instrument = config.get('METADATA', 'fixed_instrument')
 	fixed_surveyor = config.get('METADATA', 'fixed_surveyor')
-
-	'''
-	# Print current settings at app startup
-	print(Fore.GREEN + "SETTINGS: FOLDERS")
-	print(Fore.GREEN + "==================")
-	print(Fore.GREEN + "Enable Metadata: " + Fore.CYAN + Style.BRIGHT + str(path_scandata))
-	print(Fore.GREEN + "Create external file: " + Fore.CYAN + Style.BRIGHT + str(path_packages))
-	print(Fore.GREEN + "Use fixed values: " + Fore.CYAN + Style.BRIGHT + str(path_backup) + "\n")
-	print(Fore.GREEN + "SETTINGS: METADATA")
-	print(Fore.GREEN + "==================")
-	print(Fore.GREEN + "Enable Metadata: " + Fore.CYAN + Style.BRIGHT + str(metadata_export))
-	print(Fore.GREEN + "Create external file: " + Fore.CYAN + Style.BRIGHT + str(metadata_external))
-	print(Fore.GREEN + "Use fixed values: " + Fore.CYAN + Style.BRIGHT + str(metadata_fixed) + "\n")
-	if metadata_fixed == True:
-		print(Fore.GREEN + "\t" + "METADATA FIXED VALUES")
-		print(Fore.GREEN + "\t" + "=====================")
-		print(Fore.GREEN + "\t" + "Worksite: " + Fore.CYAN + Style.BRIGHT + str(fixed_worksite))
-		print(Fore.GREEN + "\t" + "Scan Type: " + Fore.CYAN + Style.BRIGHT + str(fixed_scan_type))
-		print(Fore.GREEN + "\t" + "Scan Detail: " + Fore.CYAN + Style.BRIGHT + str(fixed_scan_detail))
-		print(Fore.GREEN + "\t" + "Instrument: " + Fore.CYAN + Style.BRIGHT + str(fixed_instrument))
-		print(Fore.GREEN + "\t" + "Surveyor: " + Fore.CYAN + Style.BRIGHT + str(fixed_surveyor) + "\n")
-	time.sleep(0.1)
-	print(Fore.GREEN + "SETTINGS: LOGS")
-	print(Fore.GREEN + "==============")
-	print(Fore.GREEN + "Enable Logfile: " + Fore.CYAN + Style.BRIGHT + str(logfile))
-	print(Fore.GREEN + "Processed DB: " + Fore.CYAN + Style.BRIGHT + str(processed_db) + "\n")
-	time.sleep(0.1)
-	print(Fore.GREEN + "SETTINGS: FTP UPLOAD")
-	print(Fore.GREEN + "====================")
-	print(Fore.GREEN + "Enable FTP upload: " + Fore.CYAN + Style.BRIGHT + str(ftp_upload))
-	print(Fore.GREEN + "Auto upload: " + Fore.CYAN + Style.BRIGHT + str(auto_upload) + "\n")
-	time.sleep(0.1)
-	print(Fore.GREEN + "SETTINGS: BACKUP")
-	print(Fore.GREEN + "================")
-	print(Fore.GREEN + "Enable Backup: " + Fore.CYAN + Style.BRIGHT + str(backup))
-	print(Fore.GREEN + "Backup Cleanup: " + Fore.CYAN + Style.BRIGHT + str(backup_cleanup) + "\n")
-	'''
-
-	# update existing value
-	#config.set('section_a', 'string_val', 'world')
-
-	# add a new section and some values
-
-	#config.add_section('section_b')
-	#config.set('section_b', 'meal_val', 'spam')
-	#config.set('section_b', 'not_found_val', '404')
-
-	# save to a file
-	#with open('test_update.ini', 'w') as configfile:
-	#	config.write(configfile)
 
 
 filedb_datasets = open("settings/new_dataset_folders.txt", "w")
@@ -418,7 +371,7 @@ def appStartupMenu(process_start):
 	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "│   Made by Boris Bilc / CELU, d.o.o.  │")
 	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "│                                      │")
 	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "└──────────────────────────────────────┘")
-	print(Fore.BLUE + Style.BRIGHT + " App Version: " + str(app_version) + " - Build: " + str(app_build))
+	# print(Fore.BLUE + Style.BRIGHT + " App Version: " + str(app_version) + " - Build: " + str(app_build))
 	time.sleep(0.1)
 	# Load main app settings
 	print(Fore.GREEN + "Loading Settings File: " + app_settings_ini)
@@ -428,18 +381,18 @@ def appStartupMenu(process_start):
 	
 
 	layout = [
-		[sg.Text("PHOTO-SCAN Manager", font=app_font_title, text_color=blueBtnColor)],
-		[sg.Text("Version: " + str(app_version) + " - build: " + str(app_build), font=app_font_ver, text_color='#9b9b9b')],
+		[sg.Text("PhotoScan Manager", font=app_font_title, text_color=titleColor)],
+		# [sg.Text("Version: " + str(app_version) + " - build: " + str(app_build), font=app_font_ver, text_color='#9b9b9b')],
 		[sg.HorizontalSeparator()],
 		[sg.Text("START MENU", font=app_font_subtitle)],
 		[sg.Text("Continue: Start report manager process...")],
 		[sg.Text("Settings: Edit app settings configuration.")],
 		[sg.Text("Quit: Close application.")],
-		[sg.Button("Continue", focus=True, key='RUN', button_color=greenBtnColor), sg.Button("Settings", key='SET', disabled=True, button_color=blueBtnColor), sg.VerticalSeparator(), sg.Button("Quit", key='QUIT', button_color=redBtnColor)],
+		[sg.Button("Continue", focus=True, key='RUN', button_color=(textColWhite,greenBtnColor), border_width=0), sg.Button("Settings", key='SET', disabled=False, button_color=(textColWhite,blueBtnColor), border_width=0), sg.VerticalSeparator(), sg.Button("Quit", key='QUIT', button_color=(textColWhite,redBtnColor), border_width=0)],
 		]
 
 	# Create the window
-	window1 = sg.Window("PHOTO-SCAN Manager", layout, element_justification='c', font=app_font, finalize=True)
+	window1 = sg.Window("PhotoScan Manager", layout, element_justification='c', font=app_font, finalize=True)
 	window1.Element('RUN').SetFocus()
 	window1.bind('<c>', 'RUN')
 	window1.bind('<C>', 'RUN')
@@ -459,10 +412,11 @@ def appStartupMenu(process_start):
 			process_start = True
 			window1.close()
 			appStartProcess()
-		if event == "SETTINGS":
+		if event == "SET":
 			process_start = True
 			window1.close()
-			appStartProcess()
+			subprocess.call('edit_settings.pyw', shell=True)
+			appStartupMenu(False)
 		if event == "QUIT":
 			print(Fore.RED + Style.BRIGHT + "\n\nExiting app...\n\nGood bye!\n")
 			process_start = False
