@@ -34,7 +34,7 @@ sg.theme('DarkGrey14')		# GUI Color Theme (DarkBlue3, SystemDefaultForReal, Pyth
 
 # Button colors
 greenBtnColor = "#4cb000"
-blueBtnColor = "#59acff"
+blueBtnColor = "#3279c9"
 orangeBtnColor = "#db8504"
 redBtnColor = "#b00000"
 titleColor = '#ffc559'

@@ -6,6 +6,7 @@ from email.mime import image
 import modlib.zip_archive as zip_archive
 import base64
 import locale
+import subprocess
 from configparser import ConfigParser
 from colorama import init, Fore, Back, Style
 import PySimpleGUI as sg
@@ -17,7 +18,7 @@ init(autoreset=True)
 locale.setlocale(locale.LC_ALL, 'sl_SI')
 
 # <!#FV>
-app_version = '0.1.63'
+app_version = '0.1.65'
 #  </#FV>
 
 # App icon
@@ -31,7 +32,7 @@ sg.theme('DarkGrey14')		# GUI Color Theme (SystemDefaultForReal, Python, DarkGre
 
 # Button colors
 greenBtnColor = "#4cb000"
-blueBtnColor = "#59acff"
+blueBtnColor = "#3279c9"	#"#59acff"
 orangeBtnColor = "#db8504"
 redBtnColor = "#b00000"
 titleColor = '#ffc559'
@@ -147,19 +148,19 @@ def editSettings():
 		#[sg.Text("Working folders", font=app_font_subtitle, text_color='#ffdc73')],
 		#[sg.HorizontalSeparator()],
 		[sg.Text('Scan Data:'), sg.Push(),
-		sg.Input(default_text=str(path_scandata), key='PATH_DATA', s=(40,1), background_color='#3a3a3a', border_width=0), 
+		sg.Input(default_text=str(path_scandata), key='PATH_DATA', s=(40,1), background_color='#5a5a5a', border_width=0), 
 		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF1', tooltip='Browse folders...'), 
 		btn1],
 		[sg.Text("^ Location where new data is stored", font=font_btn_browse, pad=(130,0), text_color='#ffdc73')],
 		[sg.HorizontalSeparator(color='#ffffff')],
 		[sg.Text('Processed Data:'), sg.Push(),
-		sg.Input(default_text=str(path_packages), key='PATH_PROC', s=(40,1), background_color='#3a3a3a', border_width=0), 
+		sg.Input(default_text=str(path_packages), key='PATH_PROC', s=(40,1), background_color='#5a5a5a', border_width=0), 
 		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF2', tooltip='Browse folders...'), 
 		btn2],
 		[sg.Text("^ Location where processed data is stored", font=font_btn_browse, pad=(130,0), text_color='#ffdc73')],
 		[sg.HorizontalSeparator(color='#ffffff')],
 		[sg.Text('Backups:'), sg.Push(),
-		sg.Input(default_text=str(path_backup), key='PATH_BACKUP', s=(40,1), background_color='#3a3a3a', border_width=0), 
+		sg.Input(default_text=str(path_backup), key='PATH_BACKUP', s=(40,1), background_color='#5a5a5a', border_width=0), 
 		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF3', tooltip='Browse folders...'), 
 		btn3],
 		[sg.Text("^ Location where backups are stored", font=font_btn_browse, pad=(130,0), text_color='#ffdc73')],
@@ -179,11 +180,11 @@ def editSettings():
 		[sg.Text("Metadata: Fixed Values", font=app_font_subtitle, text_color='#6eb7ff')],
 		[sg.HorizontalSeparator()],
 		[sg.Checkbox('Use fixed values', default=metadata_fixed, checkbox_color='#2d5ba6', key='META_FIX', tooltip='Enable to use fixed values, and disable metadata options before processing.')],
-		[sg.Text('Worksite:'), sg.Push(), sg.Input(default_text=fixed_worksite, background_color='#3a3a3a', border_width=0, s=(25,1), key='FIX_1')],
-		[sg.Text('Scan type:'), sg.Push(), sg.Input(default_text=fixed_scan_type, background_color='#3a3a3a', border_width=0, s=(25,1), key='FIX_2')],
-		[sg.Text('Scan detail:'), sg.Push(), sg.Input(default_text=fixed_scan_detail, background_color='#3a3a3a', border_width=0, s=(25,1), key='FIX_3')],
-		[sg.Text('Instrument:'), sg.Push(), sg.Input(default_text=fixed_instrument, background_color='#3a3a3a', border_width=0, s=(25,1), key='FIX_4')],
-		[sg.Text('Surveyor:'), sg.Push(), sg.Input(default_text=fixed_surveyor, background_color='#3a3a3a', border_width=0, s=(25,1), key='FIX_5')],
+		[sg.Text('Worksite:'), sg.Push(), sg.Input(default_text=fixed_worksite, background_color='#5a5a5a', border_width=0, s=(25,1), key='FIX_1')],
+		[sg.Text('Scan type:'), sg.Push(), sg.Input(default_text=fixed_scan_type, background_color='#5a5a5a', border_width=0, s=(25,1), key='FIX_2')],
+		[sg.Text('Scan detail:'), sg.Push(), sg.Input(default_text=fixed_scan_detail, background_color='#5a5a5a', border_width=0, s=(25,1), key='FIX_3')],
+		[sg.Text('Instrument:'), sg.Push(), sg.Input(default_text=fixed_instrument, background_color='#5a5a5a', border_width=0, s=(25,1), key='FIX_4')],
+		[sg.Text('Surveyor:'), sg.Push(), sg.Input(default_text=fixed_surveyor, background_color='#5a5a5a', border_width=0, s=(25,1), key='FIX_5')],
 	]
 
 
@@ -200,6 +201,7 @@ def editSettings():
 		[sg.HorizontalSeparator()],
 		[sg.Checkbox('FTP Upload', default=ftp_upload, checkbox_color='#2d5ba6', key='FTP_UPL')],
 		[sg.Checkbox('Auto-Upload', default=auto_upload, checkbox_color='#2d5ba6', key='FTP_AUTO')],
+		[sg.Button("FTP Settings", key='FTPSET', focus=False, button_color=(textColWhite,blueBtnColor), border_width=0)]
 	]
 
 
@@ -244,6 +246,12 @@ def editSettings():
 		if event == "BRWSF3":
 			btn3.click()
 			
+		if event == "FTPSET":
+			windowSettings.hide()
+			subprocess.call('edit_settings-ftp.pyw', shell=True)
+			windowSettings.un_hide()
+
+		
 		if event == "SAVE":
 			path_scandata = values['PATH_DATA']
 			path_packages = values['PATH_PROC']
