@@ -17,7 +17,7 @@ init(autoreset=True)
 locale.setlocale(locale.LC_ALL, 'sl_SI')
 
 # <!#FV>
-app_version = '0.1.63'
+app_version = '0.1.65'
 #  </#FV>
 
 # App icon
@@ -25,6 +25,7 @@ app_icon = 'appicon.ico'
 
 # Main App Configuration & Info
 app_settings_ini = 'settings/app_settings.ini'
+app_settings_ini_ftp = 'settings/app_settings-ftp.ini'
 
 # Import and initialize PySimpleGUI module
 sg.theme('DarkGrey14')		# GUI Color Theme (SystemDefaultForReal, Python, DarkGrey14)
@@ -59,217 +60,97 @@ with open(img_browseFolders, "rb") as image2string:
 
 
 # Read active settings 
-def settingsRead():
+def settingsReadFtp():
 	# Global variables for settings
-	global path_scandata, path_packages, path_backup
-	global metadata_export, metadata_external, metadata_fixed
-	global fixed_worksite, fixed_scan_type, fixed_scan_detail, fixed_instrument, fixed_surveyor
-	global logfile, processed_db
-	global ftp_upload, auto_upload
-	global backup, backup_cleanup
+	global ftp_host_name, ftp_host, ftp_port, ftp_username, ftp_password, ftp_root_path, ftp_use_ssl
 	global config
 	# Prepare config parser
 	config = ConfigParser(allow_no_value=True, comment_prefixes=('#',';'))
 	config.optionxform = str
 
-	# Read settings from 'app_settings.ini' and parse them as variables 
-	config.read(app_settings_ini)
+	# Read settings from 'app_settings-ftp.ini' and parse them as variables 
+	config.read(app_settings_ini_ftp)
 
-	path_scandata = config.get('FOLDERS', 'path_scandata')
-	path_packages = config.get('FOLDERS', 'path_packages')
-	path_backup = config.get('FOLDERS', 'path_backup')
-	metadata_export = config.getboolean('METADATA', 'metadata_export')
-	metadata_external = config.getboolean('METADATA', 'metadata_external')
-	metadata_fixed = config.getboolean('METADATA', 'metadata_fixed')
-	logfile = config.getboolean('LOGS', 'logfile')
-	processed_db = config.getboolean('LOGS', 'processed_db')
-	ftp_upload = config.getboolean('UPLOAD', 'ftp_upload')
-	auto_upload = config.getboolean('UPLOAD', 'auto_upload')
-	backup = config.getboolean('BACKUP', 'backup')
-	backup_cleanup = config.getboolean('BACKUP', 'backup_cleanup')
-	fixed_worksite = config.get('METADATA', 'fixed_worksite')
-	fixed_scan_type = config.get('METADATA', 'fixed_scan_type')
-	fixed_scan_detail = config.get('METADATA', 'fixed_scan_detail')
-	fixed_instrument = config.get('METADATA', 'fixed_instrument')
-	fixed_surveyor = config.get('METADATA', 'fixed_surveyor')
+	ftp_host_name = config.get('FTP', 'ftp_host_name')
+	ftp_host = config.get('FTP', 'ftp_host')
+	ftp_port = config.get('FTP', 'ftp_port')
+	ftp_username = config.get('FTP', 'ftp_username')
+	ftp_password = config.get('FTP', 'ftp_password')
+	ftp_root_path = config.get('FTP', 'ftp_root_path')
+	ftp_use_ssl = config.getboolean('FTP', 'ftp_use_ssl')
 
 
-
-def updateSettingsFile():
+def updateSettingsFileFtp():
 	# update existing value
-	#config.set('FOLDERS', '# Valid path templates are:\n# - Relative to app root (recommended) = ScanData/\n# - Absolute path to folder = X:/my-data/ScanData\n# Folder separator can be either "/" or "\".\n# App will automatically change it to the correct separator before processing.\n', None)
-	#config.update('FOLDERS', '# Folder where new unprocessed data is located')
-	config.set('FOLDERS', 'path_scandata', str(path_scandata))
-	config.set('FOLDERS', 'path_packages', str(path_packages))
-	config.set('FOLDERS', 'path_backup', str(path_backup))
-	config.set('METADATA', 'metadata_export', str(metadata_export))
-	config.set('METADATA', 'metadata_external', str(metadata_external))
-	config.set('METADATA', 'metadata_fixed', str(metadata_fixed))
-	config.set('LOGS', 'logfile', str(logfile))
-	config.set('LOGS', 'processed_db', str(processed_db))
-	config.set('UPLOAD', 'ftp_upload', str(ftp_upload))
-	config.set('UPLOAD', 'auto_upload', str(auto_upload))
-	config.set('BACKUP', 'backup', str(backup))
-	config.set('BACKUP', 'backup_cleanup', str(backup_cleanup))
-	config.set('METADATA', 'fixed_worksite', str(fixed_worksite))
-	config.set('METADATA', 'fixed_scan_type', str(fixed_scan_type))
-	config.set('METADATA', 'fixed_scan_detail', str(fixed_scan_detail))
-	config.set('METADATA', 'fixed_instrument', str(fixed_instrument))
-	config.set('METADATA', 'fixed_surveyor', str(fixed_surveyor))
-	
-
-	# add a new section and some values
-
-	#config.add_section('section_b')
-	#config.set('section_b', 'meal_val', 'spam')
-	#config.set('section_b', 'not_found_val', '404')
-
+	config.set('FTP', 'ftp_host_name', str(ftp_host_name))
+	config.set('FTP', 'ftp_host', str(ftp_host))
+	config.set('FTP', 'ftp_port', str(ftp_port))
+	config.set('FTP', 'ftp_username', str(ftp_username))
+	config.set('FTP', 'ftp_password', str(ftp_password))
+	config.set('FTP', 'ftp_root_path', str(ftp_root_path))
+	config.set('FTP', 'ftp_use_ssl', str(ftp_use_ssl))
+		
 	# save to a file
-	with open(app_settings_ini, 'w') as configfile:
+	with open(app_settings_ini_ftp, 'w') as configfile:
 		config.write(configfile)
 
 
-def editSettings():
+def editSettingsFtp():
 	# Global variables for settings
-	global path_scandata, path_packages, path_backup
-	global metadata_export, metadata_external, metadata_fixed
-	global fixed_worksite, fixed_scan_type, fixed_scan_detail, fixed_instrument, fixed_surveyor
-	global logfile, processed_db
-	global ftp_upload, auto_upload
-	global backup, backup_cleanup
+	global ftp_host_name, ftp_host, ftp_port, ftp_username, ftp_password, ftp_root_path, ftp_use_ssl
 	global config
 	
-	btn1 = sg.FolderBrowse(target='PATH_DATA', key='BF1', font=font_btn_browse, button_color=blueBtnColor, visible=False)
-	btn2 = sg.FolderBrowse(target='PATH_PROC', key='BF2', font=font_btn_browse, button_color=blueBtnColor, visible=False)
-	btn3 = sg.FolderBrowse(target='PATH_BACKUP', key='BF3', font=font_btn_browse, button_color=blueBtnColor, visible=False)
-
-	layout_data = [
-		#[sg.Text("Working folders", font=app_font_subtitle, text_color='#ffdc73')],
-		#[sg.HorizontalSeparator()],
-		[sg.Text('Scan Data:'), sg.Push(),
-		sg.Input(default_text=str(path_scandata), key='PATH_DATA', s=(40,1), background_color='#3a3a3a', border_width=0), 
-		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF1', tooltip='Browse folders...'), 
-		btn1],
-		[sg.Text("^ Location where new data is stored", font=font_btn_browse, pad=(130,0), text_color='#ffdc73')],
-		[sg.HorizontalSeparator(color='#ffffff')],
-		[sg.Text('Processed Data:'), sg.Push(),
-		sg.Input(default_text=str(path_packages), key='PATH_PROC', s=(40,1), background_color='#3a3a3a', border_width=0), 
-		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF2', tooltip='Browse folders...'), 
-		btn2],
-		[sg.Text("^ Location where processed data is stored", font=font_btn_browse, pad=(130,0), text_color='#ffdc73')],
-		[sg.HorizontalSeparator(color='#ffffff')],
-		[sg.Text('Backups:'), sg.Push(),
-		sg.Input(default_text=str(path_backup), key='PATH_BACKUP', s=(40,1), background_color='#3a3a3a', border_width=0), 
-		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF3', tooltip='Browse folders...'), 
-		btn3],
-		[sg.Text("^ Location where backups are stored", font=font_btn_browse, pad=(130,0), text_color='#ffdc73')],
-		#[sg.HorizontalSeparator(color='#ffffff')],
-		]
-
-
-	layout_meta = [
-		[sg.Text("Metadata", font=app_font_subtitle, text_color='#6eb7ff')],
-		[sg.HorizontalSeparator()],
-		[sg.Checkbox('Metadata export', default=metadata_export, checkbox_color='#2d5ba6', key='META_EXP', tooltip='Export metadata to point file header.')],
-		[sg.Checkbox('Write to external file', default=metadata_external, checkbox_color='#2d5ba6', key='META_EXT', tooltip='Write metadata to a separate file. Will not write to header.')],
-		]
-	
-
-	layout_metafix = [
-		[sg.Text("Metadata: Fixed Values", font=app_font_subtitle, text_color='#6eb7ff')],
-		[sg.HorizontalSeparator()],
-		[sg.Checkbox('Use fixed values', default=metadata_fixed, checkbox_color='#2d5ba6', key='META_FIX', tooltip='Enable to use fixed values, and disable metadata options before processing.')],
-		[sg.Text('Worksite:'), sg.Push(), sg.Input(default_text=fixed_worksite, background_color='#3a3a3a', border_width=0, s=(25,1), key='FIX_1')],
-		[sg.Text('Scan type:'), sg.Push(), sg.Input(default_text=fixed_scan_type, background_color='#3a3a3a', border_width=0, s=(25,1), key='FIX_2')],
-		[sg.Text('Scan detail:'), sg.Push(), sg.Input(default_text=fixed_scan_detail, background_color='#3a3a3a', border_width=0, s=(25,1), key='FIX_3')],
-		[sg.Text('Instrument:'), sg.Push(), sg.Input(default_text=fixed_instrument, background_color='#3a3a3a', border_width=0, s=(25,1), key='FIX_4')],
-		[sg.Text('Surveyor:'), sg.Push(), sg.Input(default_text=fixed_surveyor, background_color='#3a3a3a', border_width=0, s=(25,1), key='FIX_5')],
-	]
-
-
-	layout_logs = [
-		[sg.Text("Logging", font=app_font_subtitle, text_color='#6eb7ff')],
-		[sg.HorizontalSeparator()],
-		[sg.Checkbox('Log events', default=logfile, checkbox_color='#2d5ba6', key='LOG_FILE')],
-		[sg.Checkbox('Log processed files', default=processed_db, checkbox_color='#2d5ba6', key='LOG_PROC')],
-	]
-
-
 	layout_ftp = [
-		[sg.Text("FTP Uploading", font=app_font_subtitle, text_color='#6eb7ff')],
+		[sg.Text("FTP Settings", font=app_font_subtitle, text_color='#6eb7ff')],
 		[sg.HorizontalSeparator()],
-		[sg.Checkbox('FTP Upload', default=ftp_upload, checkbox_color='#2d5ba6', key='FTP_UPL')],
-		[sg.Checkbox('Auto-Upload', default=auto_upload, checkbox_color='#2d5ba6', key='FTP_AUTO')],
-	]
-
-
-	layout_backup = [
-		[sg.Text("Backups", font=app_font_subtitle, text_color='#6eb7ff')],
-		[sg.HorizontalSeparator()],
-		[sg.Checkbox('Backup data', default=backup, checkbox_color='#2d5ba6', key='BACKUP')],
-		[sg.Checkbox('Cleanup processed', default=backup_cleanup, checkbox_color='#2d5ba6', key='BCKP_CLN')],
+		[sg.Text('Host Name:\t'), sg.Input(default_text=ftp_host_name, background_color='#5a5a5a', border_width=1, s=(35,1), key='FTP_HNAME')],
+		[sg.Text('Host:\t\t'), sg.Input(default_text=ftp_host, background_color='#5a5a5a', border_width=1, s=(16,1), key='FTP_HOST')],
+		[sg.Text('Port:\t\t'), sg.Input(default_text=ftp_port, background_color='#5a5a5a', border_width=1, s=(8,1), key='FTP_PORT')],
+		[sg.Text('Username:\t'), sg.Input(default_text=ftp_username, background_color='#5a5a5a', border_width=1, s=(25,1), key='FTP_US')],
+		[sg.Text('Password:\t'), sg.Input(default_text=ftp_password, background_color='#5a5a5a', border_width=1, s=(25,1), key='FTP_PS')],
+		[sg.Text('Root path:\t'), sg.Input(default_text=ftp_root_path, background_color='#5a5a5a', border_width=1, s=(35,1), key='FTP_ROOT')],
+		[sg.Checkbox('use SSL/TLS', default=ftp_use_ssl, checkbox_color='#2d5ba6', key='FTP_SSL', tooltip='Enable to use SSL/TLS.')],
 	]
 
 
 	layout_main = [
-		[sg.Text("PHOTO-SCAN Manager :: Settings", font=app_font_title, text_color=titleColor)],
+		[sg.Text("PHOTO-SCAN Manager :: FTP Settings", font=app_font_title, text_color=titleColor)],
 		[sg.HorizontalSeparator()],
-		[sg.Push(), sg.Frame('Working folders', layout_data, font=app_font_subtitle, title_color='#6eb7ff'), sg.Push()],
-		[sg.vtop([sg.Push(), sg.Col(layout_ftp), sg.Col(layout_logs), sg.Col(layout_backup), sg.Push()])],
-		[sg.vtop([sg.Push(), sg.Col(layout_meta), sg.Col(layout_metafix), sg.Push()])],
-		[sg.Button("Save & Close", key='SAVE', focus=True, button_color=(textColWhite,greenBtnColor), border_width=0), sg.Button('Close', key='QUIT', button_color=(textColWhite,orangeBtnColor), border_width=0)]
+		[sg.vtop([sg.Push(), sg.Col(layout_ftp), sg.Push()])],
+		[sg.Button("Save & Close", key='SAVE', focus=True, button_color=(textColWhite,greenBtnColor), border_width=1), sg.Button('Close', key='QUIT', button_color=(textColWhite,orangeBtnColor), border_width=1)]
 		# [sg.Button('[C]ontinue', key='CONT', button_color=greenBtnColor), sg.Button('[Q]uit', key='QUIT', button_color=redBtnColor)]
 	]
 	
-	windowSettings = sg.Window('PhotoScan Manager - Settings', layout_main, use_default_focus=False, font=app_font, no_titlebar=False, icon=app_icon, finalize=True)
-	windowSettings.Element('SAVE').SetFocus()
-	windowSettings.bind('<s>', 'SAVE')
-	windowSettings.bind('<S>', 'SAVE')
-	windowSettings.bind('<c>', 'QUIT')
-	windowSettings.bind('<C>', 'QUIT')
-	windowSettings.bind('<Escape>', 'QUIT')
+	windowSettingsFtp = sg.Window('PhotoScan Manager - FTP Settings', layout_main, use_default_focus=False, font=app_font, no_titlebar=False, icon=app_icon, finalize=True)
+	windowSettingsFtp.Element('SAVE').SetFocus()
+	windowSettingsFtp.bind('<s>', 'SAVE')
+	windowSettingsFtp.bind('<S>', 'SAVE')
+	windowSettingsFtp.bind('<c>', 'QUIT')
+	windowSettingsFtp.bind('<C>', 'QUIT')
+	windowSettingsFtp.bind('<Escape>', 'QUIT')
 
 	# Create an event loop
 	while True:
-		event, values = windowSettings.read()
+		event, values = windowSettingsFtp.read()
 		
 		# End program if user closes window or
 		# presses the OK button
-		if event == "BRWSF1":
-			btn1.click()
-			
-		if event == "BRWSF2":
-			btn2.click()
-			
-		if event == "BRWSF3":
-			btn3.click()
-			
 		if event == "SAVE":
-			path_scandata = values['PATH_DATA']
-			path_packages = values['PATH_PROC']
-			path_backup = values['PATH_BACKUP']
-			metadata_export = values['META_EXP']
-			metadata_external = values['META_EXT']
-			metadata_fixed = values['META_FIX']
-			logfile = values['LOG_FILE']
-			processed_db = values['LOG_PROC']
-			ftp_upload = values['FTP_UPL']
-			auto_upload = values['FTP_AUTO']
-			backup = values['BACKUP']
-			backup_cleanup = values['BCKP_CLN']
-			# fixed_worksite = config.get('METADATA', 'fixed_worksite')
-			# fixed_scan_type = config.get('METADATA', 'fixed_scan_type')
-			# fixed_scan_detail = config.get('METADATA', 'fixed_scan_detail')
-			# fixed_instrument = config.get('METADATA', 'fixed_instrument')
-			# fixed_surveyor = config.get('METADATA', 'fixed_surveyor')
-
-			updateSettingsFile()
-			windowSettings.close()
+			ftp_host_name = values['FTP_HNAME']
+			ftp_host = values['FTP_HOST']
+			ftp_port = values['FTP_PORT']
+			ftp_username = values['FTP_US']
+			ftp_password = values['FTP_PS']
+			ftp_root_path = values['FTP_ROOT']
+			ftp_use_ssl = values['FTP_SSL']
+			
+			updateSettingsFileFtp()
+			windowSettingsFtp.close()
 			quit()
 			
 		if event == "QUIT" or event == sg.WIN_CLOSED:
 			quit()
 			
 # Start settings editor
-settingsRead()
-editSettings()
+settingsReadFtp()
+editSettingsFtp()

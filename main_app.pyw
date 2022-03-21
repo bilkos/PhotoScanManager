@@ -19,7 +19,8 @@ init(autoreset=True)
 locale.setlocale(locale.LC_ALL, 'sl_SI')
 
 # <!#FV>
-app_version = '0.1.63'
+app_version = '0.1.65'
+app_version_mini = 'v' + str(app_version)
 #  </#FV>
 
 # App icon
@@ -46,7 +47,7 @@ app_font_title = 'Bahnschrift 20 bold'
 app_font_subtitle = 'Bahnschrift 14 bold'
 app_font_ver = 'Bahnschrift 9 bold'
 app_font_menubar = 'Bahnschrift 9'
-app_font_statusbar = 'Bahnschrift 8'
+app_font_statusbar = 'Bahnschrift 9'
 app_font = 'Bahnschrift 11'
 sg.set_options(font=app_font)
 
@@ -55,7 +56,7 @@ sg.set_options(font=app_font)
 new_count = 0					# New datasets counter init
 process_start = False			# Start process initialize
 
-app_statusbar_text = 'App started...'
+app_statusbar_text = 'Settings loaded. App ready...'
 
 # Load settings from files in ./settings folder
 def metaOptionsRead():
@@ -426,7 +427,7 @@ def appStartupMenu(process_start):
 	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "│   Made by Boris Bilc / CELU, d.o.o.  │")
 	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "│                                      │")
 	print(Back.BLUE + Fore.YELLOW + Style.BRIGHT + "└──────────────────────────────────────┘")
-	# print(Fore.BLUE + Style.BRIGHT + " App Version: " + str(app_version) + " - Build: " + str(app_build))
+	print(Fore.BLUE + Style.BRIGHT + " App Version: " + str(app_version_mini))
 	time.sleep(0.1)
 	# Load main app settings
 	print(Fore.GREEN + "Loading Settings File: " + app_settings_ini)
@@ -441,15 +442,14 @@ def appStartupMenu(process_start):
 
 	layout = [
 		[sg.MenuBar(menu_def, pad=0, font=app_font_menubar)],
-		[sg.Text("PhotoScan Manager", font=app_font_title, text_color=titleColor)],
-		# [sg.Text("Version: " + str(app_version) + " - build: " + str(app_build), font=app_font_ver, text_color='#9b9b9b')],
+		[sg.Text("PhotoScan Manager", font=app_font_title, text_color=titleColor), sg.Text(app_version_mini, font=app_font_statusbar, text_color=blueBtnColor)],
 		[sg.HorizontalSeparator()],
 		[sg.Text("START MENU", font=app_font_subtitle)],
 		[sg.Text("Continue: Start report manager process...")],
 		[sg.Text("Settings: Edit app settings configuration.")],
 		[sg.Text("Exit: Close application.")],
 		[sg.Button("Continue", focus=True, key='RUN', button_color=(textColWhite,greenBtnColor), border_width=0, pad=10), sg.Button("Settings", key='SET', disabled=False, button_color=(textColWhite,blueBtnColor), border_width=0, pad=10), sg.VerticalSeparator(), sg.Button("Exit", key='QUIT', button_color=(textColWhite,redBtnColor), border_width=0, pad=10)],
-		[sg.StatusBar(text=app_statusbar_text, relief='flat', font=app_font_statusbar, background_color='#333333', pad=((0,0),(10,0)), justification='left')],
+		[sg.StatusBar(text=app_statusbar_text, relief='flat', font=app_font_statusbar, background_color='#4a4a4a', pad=((0,0),(10,0)), justification='left')],
 		]
 
 	# Create the window
