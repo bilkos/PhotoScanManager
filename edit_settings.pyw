@@ -152,23 +152,23 @@ def editSettings():
 	btn3 = sg.FolderBrowse(target='PATH_BACKUP', key='BF3', font=font_btn_browse, button_color=blueBtnColor, visible=False)
 
 	layout_data = [
-		#[sg.Text("Working folders", font=app_font_subtitle, text_color='#ffdc73')],
-		#[sg.HorizontalSeparator()],
+		[sg.Text("Working folders", font=app_font_subtitle, text_color='#ffdc73')],
+		[sg.HorizontalSeparator()],
 		[sg.Text('Scan Data:'), sg.Push(),
 		sg.Input(default_text=str(path_scandata), key='PATH_DATA', s=(40,1), background_color=inputBgDir, border_width=1, tooltip='Location where new data is stored'), 
-		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF1', tooltip='Browse folders...', pad=((5,10),(5,5))), 
+		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF1', tooltip='Browse folders...', pad=((5,10),(5,10))), 
 		btn1],
 		# [sg.Text("^ Location where new data is stored", font=font_btn_browse, pad=(130,0), text_color='#ffdc73')],
 		[sg.HorizontalSeparator(color='#ffffff')],
 		[sg.Text('Processed Data:'), sg.Push(),
 		sg.Input(default_text=str(path_packages), key='PATH_PROC', s=(40,1), background_color=inputBgDir, border_width=1, tooltip='Location where processed data is stored'),
-		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF2', tooltip='Browse folders...', pad=((5,10),(5,5))), 
+		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF2', tooltip='Browse folders...', pad=((5,10),(5,10))), 
 		btn2],
 		# [sg.Text("^ Location where processed data is stored", font=font_btn_browse, pad=(130,0), text_color='#ffdc73')],
 		[sg.HorizontalSeparator(color='#ffffff')],
 		[sg.Text('Backups:'), sg.Push(),
 		sg.Input(default_text=str(path_backup), key='PATH_BACKUP', s=(40,1), background_color=inputBgDir, border_width=1, tooltip='Location where backups are stored'), 
-		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF3', tooltip='Browse folders...', pad=((5,10),(5,5))), 
+		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF3', tooltip='Browse folders...', pad=((5,10),(5,10))), 
 		btn3],
 		# [sg.Text("^ Location where backups are stored", font=font_btn_browse, pad=(130,0), text_color='#ffdc73')],
 		#[sg.HorizontalSeparator(color='#ffffff')],
@@ -176,17 +176,17 @@ def editSettings():
 
 
 	layout_meta = [
-		[sg.Text("Metadata", font=app_font_subtitle, text_color=colorVijolet)],
+		[sg.Text("Metadata", font=app_font_subtitle, text_color=blueBtnColor)],
 		[sg.HorizontalSeparator()],
-		[sg.Checkbox('Metadata export', default=metadata_export, key='META_EXP', checkbox_color=colorVijoletD, tooltip='Export metadata to point file header.')],
-		[sg.Checkbox('Write to external file', default=metadata_external, key='META_EXT', checkbox_color=colorVijoletD, tooltip='Write metadata to a separate file. Will not write to header.')],
+		[sg.Checkbox('Metadata export', default=metadata_export, key='META_EXP', checkbox_color=blueBtnColor, tooltip='Export metadata to point file header.')],
+		[sg.Checkbox('Write to external file', default=metadata_external, key='META_EXT', checkbox_color=blueBtnColor, tooltip='Write metadata to a separate file. Will not write to header.')],
 	]
 	
 
 	layout_metafix = [
-		[sg.Text("Metadata: Fixed Values", font=app_font_subtitle, text_color='#6eb7ff')],
+		[sg.Text("Metadata: Fixed Values", font=app_font_subtitle, text_color=blueBtnColor)],
 		[sg.HorizontalSeparator()],
-		[sg.Checkbox('Use fixed values', default=metadata_fixed, key='META_FIX', tooltip='Enable to use fixed values, and disable metadata options before processing.')],
+		[sg.Checkbox('Use fixed values', default=metadata_fixed, key='META_FIX', checkbox_color=blueBtnColor, tooltip='Enable to use fixed values, and disable metadata options before processing.')],
 		[sg.Text('Worksite:'), sg.Push(), sg.Input(default_text=fixed_worksite, background_color=inputBg, border_width=1, s=(25,1), key='FIX_1')],
 		[sg.Text('Scan type:'), sg.Push(), sg.Input(default_text=fixed_scan_type, background_color=inputBg, border_width=1, s=(25,1), key='FIX_2')],
 		[sg.Text('Scan detail:'), sg.Push(), sg.Input(default_text=fixed_scan_detail, background_color=inputBg, border_width=1, s=(25,1), key='FIX_3')],
@@ -196,10 +196,10 @@ def editSettings():
 
 
 	layout_logs = [
-		[sg.Text("Logging", font=app_font_subtitle, text_color='#6eb7ff')],
+		[sg.Text("Logging", font=app_font_subtitle, text_color=colorVijolet)],
 		[sg.HorizontalSeparator()],
-		[sg.Checkbox('Log events', default=logfile, checkbox_color=blueBtnColor, key='LOG_FILE')],
-		[sg.Checkbox('Log processed files', default=processed_db, checkbox_color=blueBtnColor, key='LOG_PROC')],
+		[sg.Checkbox('Log events', default=logfile, checkbox_color=colorVijoletD, key='LOG_FILE')],
+		[sg.Checkbox('Log processed files', default=processed_db, checkbox_color=colorVijoletD, key='LOG_PROC')],
 	]
 
 	layout_ftp = [
@@ -220,11 +220,11 @@ def editSettings():
 
 
 	layout_main = [
-		[sg.Text("PHOTO-SCAN Manager :: Settings", font=app_font_title, text_color=titleColor)],
+		[sg.Text("Settings", font=app_font_title, text_color=titleColor)],
 		[sg.HorizontalSeparator()],
-		[sg.Push(), sg.Frame('Working folders', layout_data, font=app_font_subtitle, title_color=yellowColor, relief='solid', border_width=1, pad=((0,0),(10,20))), sg.Push()],
-		[sg.Col(layout_logs, vertical_alignment='top'), sg.Col(layout_backup, vertical_alignment='top'), sg.Col(layout_ftp), sg.Push()],
-		[sg.Col(layout_meta, vertical_alignment='top'), sg.Push(), sg.Col(layout_metafix)],
+		[sg.Push(), sg.Col(layout_data, pad=((0,0),(10,25))), sg.Push()],
+		[sg.Col(layout_logs, vertical_alignment='top'), sg.Push(), sg.Col(layout_backup, vertical_alignment='top'), sg.Push(), sg.Col(layout_ftp)],
+		[sg.Col(layout_meta, vertical_alignment='top', pad=((0,0),(10,25))), sg.Push(), sg.Col(layout_metafix, pad=((0,0),(10,25)))],
 		[sg.Button("Save & Close", key='SAVE', focus=True, button_color=(textColWhite,greenBtnColor), border_width=0), sg.Button('Close', key='QUIT', button_color=(textColWhite,redBtnColor), border_width=0)]
 	]
 	

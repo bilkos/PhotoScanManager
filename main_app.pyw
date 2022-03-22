@@ -50,12 +50,14 @@ inputBg = '#2e4d70'
 inputBgDir = '#545454'
 
 # Default App Font for GUI
-app_font_title = 'Bahnschrift 20 bold'
-app_font_subtitle = 'Bahnschrift 14 bold'
-app_font_ver = 'Bahnschrift 9 bold'
-app_font_menubar = 'Bahnschrift 9'
-app_font_statusbar = 'Bahnschrift 9'
-app_font = 'Bahnschrift 11'
+app_font_title = 'Segoe+UI 22 bold'
+app_font_subtitle = 'Segoe+UI 14 bold'
+app_font_ver = 'Segoe+UI 9 bold'
+app_font_menubar = 'Segoe+UI 10'
+app_font_statusbar = 'Segoe+UI 10'
+app_font = 'Segoe+UI 11'
+app_font_b = 'Segoe+UI 11 bold'
+
 sg.set_options(font=app_font)
 
 
@@ -170,18 +172,18 @@ def metaOptionsRead():
 
 
 	layout_meta = [
-		[sg.Text("PhotoScan Manager :: Process Setup", font=app_font_title, text_color=titleColor)],
+		[sg.Push(), sg.Text("PhotoScan Manager :: Process", font=app_font_title, text_color=titleColor), sg.Push()],
 		[sg.HorizontalSeparator()],
 		[sg.Text("DataSet / Point file", font=app_font_subtitle, text_color='#6eb7ff')],
 		[sg.HorizontalSeparator()],
-		[sg.vtop([sg.Col(layout_fileFolders)])],
-		[sg.vtop([sg.Col(layout_filePoints)])],
+		[sg.Push(), sg.Col(layout_fileFolders), sg.Push()],
+		[sg.Push(), sg.Col(layout_filePoints), sg.Push()],
 		[sg.Text("Metadata", font=app_font_subtitle, text_color='#6eb7ff')],
 		[sg.HorizontalSeparator()],
-		[sg.vtop([sg.Col(layout_work), sg.Col(layout_inst)])],
-		[sg.vtop([sg.Col(layout_scantype), sg.Col(layout_surveyor)])],
-		[sg.vtop([sg.Col(layout_scandet), sg.Col(layout_date)])],
-		[sg.vtop([sg.Col(layout_station)])],
+		[sg.Push(), sg.Col(layout_work, vertical_alignment='top'), sg.Col(layout_inst, vertical_alignment='top'), sg.Push()],
+		[sg.Push(), sg.Col(layout_scantype, vertical_alignment='top'), sg.Col(layout_surveyor, vertical_alignment='top'), sg.Push()],
+		[sg.Push(), sg.Col(layout_scandet, vertical_alignment='top'), sg.Col(layout_date, vertical_alignment='top'), sg.Push()],
+		[sg.Push(), sg.Col(layout_station), sg.Push()],
 		[sg.Button('Exit', key='QUIT', button_color=(textColWhite,redBtnColor), border_width=0), sg.Button('Back', key='BACK', button_color=(textColWhite,orangeBtnColor), border_width=0), sg.Push(), sg.Button("Process Dataset", key='CONT', focus=True, button_color=(textColWhite,greenBtnColor), border_width=0)]
 		# [sg.Button('[C]ontinue', key='CONT', button_color=greenBtnColor), sg.Button('[Q]uit', key='QUIT', button_color=redBtnColor)]
 	]
@@ -308,7 +310,7 @@ def selectDataToProcess():
 	file_folders.close()
 	# Prepare Layout (Folders)
 	layout_fileFolders = [
-		[sg.Text('Dataset folders:')],
+		[sg.Text('Dataset folders:', font=app_font_b)],
 		# Create List object with options
 		[sg.OptionMenu(file_folders_list, default_value=file_folders_list[0], key='LIST_FOLDERS', s=(50, file_folders_i), auto_size_text=True)],
 	]

@@ -48,12 +48,12 @@ inputBg = '#2e4d70'
 inputBgDir = '#545454'
 
 # Default App Font for GUI
-app_font_title = 'Bahnschrift 20 bold'
-app_font_subtitle = 'Bahnschrift 14 bold'
-app_font_ver = 'Bahnschrift 9 bold'
-app_font = 'Bahnschrift 11'
-font_btn_browse = 'Bahnschrift 9'
-font_btn_browse2 = 'Bahnschrift 10'
+app_font_title = 'Segoe+UI 20 bold'
+app_font_subtitle = 'Segoe+UI 14 bold'
+app_font_ver = 'Segoe+UI 9 bold'
+app_font = 'Segoe+UI 11'
+font_btn_browse = 'Segoe+UI 9'
+font_btn_browse2 = 'Segoe+UI 10'
 sg.set_options(font=app_font)
 
 # Image for browse folders
@@ -108,20 +108,20 @@ def editSettingsFtp():
 	global config
 	
 	layout_ftp = [
-		[sg.Text("FTP Settings", font=app_font_subtitle, text_color='#6eb7ff')],
+		[sg.Text("Host Server", font=app_font_subtitle, text_color='#6eb7ff')],
 		[sg.HorizontalSeparator()],
-		[sg.Text('Host Name:\t'), sg.Input(default_text=ftp_host_name, background_color='#415f78', text_color='#f6f6f6', border_width=1, s=(35,1), key='FTP_HNAME')],
-		[sg.Text('Host:\t\t'), sg.Input(default_text=ftp_host, background_color='#415f78', text_color='#f6f6f6', border_width=1, s=(16,1), key='FTP_HOST')],
-		[sg.Text('Port:\t\t'), sg.Input(default_text=ftp_port, background_color='#415f78', text_color='#f6f6f6', border_width=1, s=(8,1), key='FTP_PORT')],
-		[sg.Text('Username:\t'), sg.Input(default_text=ftp_username, background_color='#415f78', text_color='#f6f6f6', border_width=1, s=(25,1), key='FTP_US')],
-		[sg.Text('Password:\t'), sg.Input(default_text=ftp_password, background_color='#415f78', text_color='#f6f6f6', border_width=1, s=(25,1), key='FTP_PS')],
-		[sg.Text('Root path:\t'), sg.Input(default_text=ftp_root_path, background_color='#415f78', text_color='#f6f6f6', border_width=1, s=(35,1), key='FTP_ROOT')],
-		[sg.Checkbox('use SSL/TLS', default=ftp_use_ssl, checkbox_color='#415f78', key='FTP_SSL', tooltip='Enable to use SSL/TLS.')],
+		[sg.Text('Host Name:\t'), sg.Input(default_text=ftp_host_name, background_color='#415f78', text_color='#f6f6f6', border_width=1, s=(30,1), key='FTP_HNAME')],
+		[sg.Text('Host:\t\t'), sg.Input(default_text=ftp_host, background_color=inputBgDir, text_color='#f6f6f6', border_width=1, s=(16,1), key='FTP_HOST')],
+		[sg.Text('Port:\t\t'), sg.Input(default_text=ftp_port, background_color=inputBgDir, text_color='#f6f6f6', border_width=1, s=(8,1), key='FTP_PORT')],
+		[sg.Text('Username:\t'), sg.Input(default_text=ftp_username, background_color=inputBgDir, text_color='#f6f6f6', border_width=1, s=(20,1), key='FTP_US')],
+		[sg.Text('Password:\t'), sg.Input(default_text=ftp_password, background_color=inputBgDir, text_color='#f6f6f6', border_width=1, s=(20,1), key='FTP_PS')],
+		[sg.Text('Root path:\t'), sg.Input(default_text=ftp_root_path, background_color=inputBgDir, text_color='#f6f6f6', border_width=1, s=(30,1), key='FTP_ROOT')],
+		[sg.Text('Use SSL/TLS:\t'), sg.Checkbox('', default=ftp_use_ssl, checkbox_color=inputBgDir, key='FTP_SSL', tooltip='Enable to use SSL/TLS.')],
 	]
 
 
 	layout_main = [
-		[sg.Text("PHOTO-SCAN Manager :: FTP Settings", font=app_font_title, text_color=titleColor)],
+		[sg.Text("FTP Settings", font=app_font_title, text_color=titleColor)],
 		[sg.HorizontalSeparator()],
 		[sg.vtop([sg.Push(), sg.Col(layout_ftp), sg.Push()])],
 		[sg.Button("Save & Close", key='SAVE', focus=True, button_color=(textColWhite,greenBtnColor), border_width=0), sg.Button('Close', key='QUIT', button_color=(textColWhite,redBtnColor), border_width=0)]
