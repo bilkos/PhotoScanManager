@@ -17,7 +17,7 @@ init(autoreset=True)
 locale.setlocale(locale.LC_ALL, 'sl_SI')
 
 # <!#FV>
-app_version = '0.1.65'
+app_version = '0.1.66'
 #  </#FV>
 
 # App icon
@@ -28,17 +28,24 @@ app_settings_ini = 'settings/app_settings.ini'
 app_settings_ini_ftp = 'settings/app_settings-ftp.ini'
 
 # Import and initialize PySimpleGUI module
-sg.theme('DarkGrey14')		# GUI Color Theme (SystemDefaultForReal, Python, DarkGrey14)
+sg.theme('DarkGrey9')		# GUI Color Theme (SystemDefaultForReal, Python, DarkGrey14)
 
 # Button colors
 greenBtnColor = "#4cb000"
-blueBtnColor = "#59acff"
+blueBtnColor = "#5591d4"	#"#59acff"
+yellowColor = "#ffef78"
+dblueBtnColor = "#14365c"
 orangeBtnColor = "#db8504"
 redBtnColor = "#b00000"
+ftpsetBtnColor = "#cf6b00"
 titleColor = '#ffc559'
 textColWhite = '#ffffff'
 textColBlack = '#000000'
 listboxBg = '#3282d1'
+colorVijolet = '#c2a1ff'
+colorVijoletD = '#a778ff'
+inputBg = '#2e4d70'
+inputBgDir = '#545454'
 
 # Default App Font for GUI
 app_font_title = 'Bahnschrift 20 bold'
@@ -103,13 +110,13 @@ def editSettingsFtp():
 	layout_ftp = [
 		[sg.Text("FTP Settings", font=app_font_subtitle, text_color='#6eb7ff')],
 		[sg.HorizontalSeparator()],
-		[sg.Text('Host Name:\t'), sg.Input(default_text=ftp_host_name, background_color='#5a5a5a', border_width=0, s=(35,1), key='FTP_HNAME')],
-		[sg.Text('Host:\t\t'), sg.Input(default_text=ftp_host, background_color='#5a5a5a', border_width=0, s=(16,1), key='FTP_HOST')],
-		[sg.Text('Port:\t\t'), sg.Input(default_text=ftp_port, background_color='#5a5a5a', border_width=0, s=(8,1), key='FTP_PORT')],
-		[sg.Text('Username:\t'), sg.Input(default_text=ftp_username, background_color='#5a5a5a', border_width=0, s=(25,1), key='FTP_US')],
-		[sg.Text('Password:\t'), sg.Input(default_text=ftp_password, background_color='#5a5a5a', border_width=0, s=(25,1), key='FTP_PS')],
-		[sg.Text('Root path:\t'), sg.Input(default_text=ftp_root_path, background_color='#5a5a5a', border_width=0, s=(35,1), key='FTP_ROOT')],
-		[sg.Checkbox('use SSL/TLS', default=ftp_use_ssl, checkbox_color='#2d5ba6', key='FTP_SSL', tooltip='Enable to use SSL/TLS.')],
+		[sg.Text('Host Name:\t'), sg.Input(default_text=ftp_host_name, background_color='#415f78', text_color='#f6f6f6', border_width=1, s=(35,1), key='FTP_HNAME')],
+		[sg.Text('Host:\t\t'), sg.Input(default_text=ftp_host, background_color='#415f78', text_color='#f6f6f6', border_width=1, s=(16,1), key='FTP_HOST')],
+		[sg.Text('Port:\t\t'), sg.Input(default_text=ftp_port, background_color='#415f78', text_color='#f6f6f6', border_width=1, s=(8,1), key='FTP_PORT')],
+		[sg.Text('Username:\t'), sg.Input(default_text=ftp_username, background_color='#415f78', text_color='#f6f6f6', border_width=1, s=(25,1), key='FTP_US')],
+		[sg.Text('Password:\t'), sg.Input(default_text=ftp_password, background_color='#415f78', text_color='#f6f6f6', border_width=1, s=(25,1), key='FTP_PS')],
+		[sg.Text('Root path:\t'), sg.Input(default_text=ftp_root_path, background_color='#415f78', text_color='#f6f6f6', border_width=1, s=(35,1), key='FTP_ROOT')],
+		[sg.Checkbox('use SSL/TLS', default=ftp_use_ssl, checkbox_color='#415f78', key='FTP_SSL', tooltip='Enable to use SSL/TLS.')],
 	]
 
 
@@ -117,7 +124,7 @@ def editSettingsFtp():
 		[sg.Text("PHOTO-SCAN Manager :: FTP Settings", font=app_font_title, text_color=titleColor)],
 		[sg.HorizontalSeparator()],
 		[sg.vtop([sg.Push(), sg.Col(layout_ftp), sg.Push()])],
-		[sg.Button("Save & Close", key='SAVE', focus=True, button_color=(textColWhite,greenBtnColor), border_width=0), sg.Button('Close', key='QUIT', button_color=(textColWhite,orangeBtnColor), border_width=0)]
+		[sg.Button("Save & Close", key='SAVE', focus=True, button_color=(textColWhite,greenBtnColor), border_width=0), sg.Button('Close', key='QUIT', button_color=(textColWhite,redBtnColor), border_width=0)]
 		# [sg.Button('[C]ontinue', key='CONT', button_color=greenBtnColor), sg.Button('[Q]uit', key='QUIT', button_color=redBtnColor)]
 	]
 	

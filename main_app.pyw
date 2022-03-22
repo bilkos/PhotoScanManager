@@ -19,7 +19,7 @@ init(autoreset=True)
 locale.setlocale(locale.LC_ALL, 'sl_SI')
 
 # <!#FV>
-app_version = '0.1.65'
+app_version = '0.1.66'
 app_version_mini = 'v' + str(app_version)
 #  </#FV>
 
@@ -30,17 +30,24 @@ app_icon = 'appicon.ico'
 app_settings_ini = 'settings/app_settings.ini'
 
 # Import and initialize PySimpleGUI module
-sg.theme('DarkGrey14')		# GUI Color Theme (DarkBlue3, SystemDefaultForReal, Python, DarkGrey14)
+sg.theme('DarkGrey9')		# GUI Color Theme (SystemDefaultForReal, Python, DarkGrey14)
 
 # Button colors
 greenBtnColor = "#4cb000"
-blueBtnColor = "#3279c9"
+blueBtnColor = "#5591d4"	#"#59acff"
+yellowColor = "#ffef78"
+dblueBtnColor = "#14365c"
 orangeBtnColor = "#db8504"
 redBtnColor = "#b00000"
+ftpsetBtnColor = "#cf6b00"
 titleColor = '#ffc559'
 textColWhite = '#ffffff'
 textColBlack = '#000000'
 listboxBg = '#3282d1'
+colorVijolet = '#c2a1ff'
+colorVijoletD = '#a778ff'
+inputBg = '#2e4d70'
+inputBgDir = '#545454'
 
 # Default App Font for GUI
 app_font_title = 'Bahnschrift 20 bold'
@@ -442,14 +449,14 @@ def appStartupMenu(process_start):
 
 	layout = [
 		[sg.MenuBar(menu_def, pad=0, font=app_font_menubar)],
-		[sg.Text("PhotoScan Manager", font=app_font_title, text_color=titleColor), sg.Text(app_version_mini, font=app_font_statusbar, text_color=blueBtnColor)],
+		[sg.Text("PhotoScan Manager", font=app_font_title, text_color=titleColor), sg.Text(app_version_mini, font=app_font_statusbar, text_color=textColWhite)],
 		[sg.HorizontalSeparator()],
-		[sg.Text("START MENU", font=app_font_subtitle)],
+		[sg.Text("START MENU", font=app_font_subtitle, text_color='#6eb7ff')],
 		[sg.Text("Continue: Start report manager process...")],
 		[sg.Text("Settings: Edit app settings configuration.")],
 		[sg.Text("Exit: Close application.")],
 		[sg.Button("Continue", focus=True, key='RUN', button_color=(textColWhite,greenBtnColor), border_width=0, pad=10), sg.Button("Settings", key='SET', disabled=False, button_color=(textColWhite,blueBtnColor), border_width=0, pad=10), sg.VerticalSeparator(), sg.Button("Exit", key='QUIT', button_color=(textColWhite,redBtnColor), border_width=0, pad=10)],
-		[sg.StatusBar(text=app_statusbar_text, relief='flat', font=app_font_statusbar, background_color='#4a4a4a', pad=((0,0),(10,0)), justification='left')],
+		[sg.StatusBar(text=app_statusbar_text, relief='flat', font=app_font_statusbar, background_color='#3a3a3a', pad=((0,0),(10,0)), justification='left')],
 		]
 
 	# Create the window

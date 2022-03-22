@@ -18,7 +18,7 @@ init(autoreset=True)
 locale.setlocale(locale.LC_ALL, 'sl_SI')
 
 # <!#FV>
-app_version = '0.1.65'
+app_version = '0.1.66'
 #  </#FV>
 
 # App icon
@@ -28,25 +28,32 @@ app_icon = 'appicon.ico'
 app_settings_ini = 'settings/app_settings.ini'
 
 # Import and initialize PySimpleGUI module
-sg.theme('DarkGrey14')		# GUI Color Theme (SystemDefaultForReal, Python, DarkGrey14)
+sg.theme('DarkGrey9')		# GUI Color Theme (SystemDefaultForReal, Python, DarkGrey14)
 
 # Button colors
 greenBtnColor = "#4cb000"
-blueBtnColor = "#3279c9"	#"#59acff"
+blueBtnColor = "#5591d4"	#"#59acff"
+yellowColor = "#ffef78"
+dblueBtnColor = "#14365c"
 orangeBtnColor = "#db8504"
 redBtnColor = "#b00000"
+ftpsetBtnColor = "#cf6b00"
 titleColor = '#ffc559'
 textColWhite = '#ffffff'
 textColBlack = '#000000'
 listboxBg = '#3282d1'
+colorVijolet = '#c2a1ff'
+colorVijoletD = '#a778ff'
+inputBg = '#2e4d70'
+inputBgDir = '#545454'
 
-# Default App Font for GUI
-app_font_title = 'Bahnschrift 20 bold'
-app_font_subtitle = 'Bahnschrift 14 bold'
-app_font_ver = 'Bahnschrift 9 bold'
-app_font = 'Bahnschrift 11'
-font_btn_browse = 'Bahnschrift 9'
-font_btn_browse2 = 'Bahnschrift 10'
+# Default App Font for GUI 'Bahnschrift
+app_font_title = 'Segoe+UI 20 bold'
+app_font_subtitle = 'Segoe+UI 14 bold'
+app_font_ver = 'Segoe+UI 9 bold'
+app_font = 'Segoe+UI 11'
+font_btn_browse = 'Segoe+UI 9'
+font_btn_browse2 = 'Segoe+UI 10'
 sg.set_options(font=app_font)
 
 # Image for browse folders
@@ -148,79 +155,77 @@ def editSettings():
 		#[sg.Text("Working folders", font=app_font_subtitle, text_color='#ffdc73')],
 		#[sg.HorizontalSeparator()],
 		[sg.Text('Scan Data:'), sg.Push(),
-		sg.Input(default_text=str(path_scandata), key='PATH_DATA', s=(40,1), background_color='#5a5a5a', border_width=0), 
-		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF1', tooltip='Browse folders...'), 
+		sg.Input(default_text=str(path_scandata), key='PATH_DATA', s=(40,1), background_color=inputBgDir, border_width=1, tooltip='Location where new data is stored'), 
+		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF1', tooltip='Browse folders...', pad=((5,10),(5,5))), 
 		btn1],
-		[sg.Text("^ Location where new data is stored", font=font_btn_browse, pad=(130,0), text_color='#ffdc73')],
+		# [sg.Text("^ Location where new data is stored", font=font_btn_browse, pad=(130,0), text_color='#ffdc73')],
 		[sg.HorizontalSeparator(color='#ffffff')],
 		[sg.Text('Processed Data:'), sg.Push(),
-		sg.Input(default_text=str(path_packages), key='PATH_PROC', s=(40,1), background_color='#5a5a5a', border_width=0), 
-		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF2', tooltip='Browse folders...'), 
+		sg.Input(default_text=str(path_packages), key='PATH_PROC', s=(40,1), background_color=inputBgDir, border_width=1, tooltip='Location where processed data is stored'),
+		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF2', tooltip='Browse folders...', pad=((5,10),(5,5))), 
 		btn2],
-		[sg.Text("^ Location where processed data is stored", font=font_btn_browse, pad=(130,0), text_color='#ffdc73')],
+		# [sg.Text("^ Location where processed data is stored", font=font_btn_browse, pad=(130,0), text_color='#ffdc73')],
 		[sg.HorizontalSeparator(color='#ffffff')],
 		[sg.Text('Backups:'), sg.Push(),
-		sg.Input(default_text=str(path_backup), key='PATH_BACKUP', s=(40,1), background_color='#5a5a5a', border_width=0), 
-		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF3', tooltip='Browse folders...'), 
+		sg.Input(default_text=str(path_backup), key='PATH_BACKUP', s=(40,1), background_color=inputBgDir, border_width=1, tooltip='Location where backups are stored'), 
+		sg.Image(source=img_browseFolders, subsample=8, enable_events=True, key='BRWSF3', tooltip='Browse folders...', pad=((5,10),(5,5))), 
 		btn3],
-		[sg.Text("^ Location where backups are stored", font=font_btn_browse, pad=(130,0), text_color='#ffdc73')],
+		# [sg.Text("^ Location where backups are stored", font=font_btn_browse, pad=(130,0), text_color='#ffdc73')],
 		#[sg.HorizontalSeparator(color='#ffffff')],
 		]
 
 
 	layout_meta = [
-		[sg.Text("Metadata", font=app_font_subtitle, text_color='#6eb7ff')],
+		[sg.Text("Metadata", font=app_font_subtitle, text_color=colorVijolet)],
 		[sg.HorizontalSeparator()],
-		[sg.Checkbox('Metadata export', default=metadata_export, checkbox_color='#2d5ba6', key='META_EXP', tooltip='Export metadata to point file header.')],
-		[sg.Checkbox('Write to external file', default=metadata_external, checkbox_color='#2d5ba6', key='META_EXT', tooltip='Write metadata to a separate file. Will not write to header.')],
-		]
+		[sg.Checkbox('Metadata export', default=metadata_export, key='META_EXP', checkbox_color=colorVijoletD, tooltip='Export metadata to point file header.')],
+		[sg.Checkbox('Write to external file', default=metadata_external, key='META_EXT', checkbox_color=colorVijoletD, tooltip='Write metadata to a separate file. Will not write to header.')],
+	]
 	
 
 	layout_metafix = [
 		[sg.Text("Metadata: Fixed Values", font=app_font_subtitle, text_color='#6eb7ff')],
 		[sg.HorizontalSeparator()],
-		[sg.Checkbox('Use fixed values', default=metadata_fixed, checkbox_color='#2d5ba6', key='META_FIX', tooltip='Enable to use fixed values, and disable metadata options before processing.')],
-		[sg.Text('Worksite:'), sg.Push(), sg.Input(default_text=fixed_worksite, background_color='#5a5a5a', border_width=0, s=(25,1), key='FIX_1')],
-		[sg.Text('Scan type:'), sg.Push(), sg.Input(default_text=fixed_scan_type, background_color='#5a5a5a', border_width=0, s=(25,1), key='FIX_2')],
-		[sg.Text('Scan detail:'), sg.Push(), sg.Input(default_text=fixed_scan_detail, background_color='#5a5a5a', border_width=0, s=(25,1), key='FIX_3')],
-		[sg.Text('Instrument:'), sg.Push(), sg.Input(default_text=fixed_instrument, background_color='#5a5a5a', border_width=0, s=(25,1), key='FIX_4')],
-		[sg.Text('Surveyor:'), sg.Push(), sg.Input(default_text=fixed_surveyor, background_color='#5a5a5a', border_width=0, s=(25,1), key='FIX_5')],
+		[sg.Checkbox('Use fixed values', default=metadata_fixed, key='META_FIX', tooltip='Enable to use fixed values, and disable metadata options before processing.')],
+		[sg.Text('Worksite:'), sg.Push(), sg.Input(default_text=fixed_worksite, background_color=inputBg, border_width=1, s=(25,1), key='FIX_1')],
+		[sg.Text('Scan type:'), sg.Push(), sg.Input(default_text=fixed_scan_type, background_color=inputBg, border_width=1, s=(25,1), key='FIX_2')],
+		[sg.Text('Scan detail:'), sg.Push(), sg.Input(default_text=fixed_scan_detail, background_color=inputBg, border_width=1, s=(25,1), key='FIX_3')],
+		[sg.Text('Instrument:'), sg.Push(), sg.Input(default_text=fixed_instrument, background_color=inputBg, border_width=1, s=(25,1), key='FIX_4')],
+		[sg.Text('Surveyor:'), sg.Push(), sg.Input(default_text=fixed_surveyor, background_color=inputBg, border_width=1, s=(25,1), key='FIX_5')],
 	]
 
 
 	layout_logs = [
 		[sg.Text("Logging", font=app_font_subtitle, text_color='#6eb7ff')],
 		[sg.HorizontalSeparator()],
-		[sg.Checkbox('Log events', default=logfile, checkbox_color='#2d5ba6', key='LOG_FILE')],
-		[sg.Checkbox('Log processed files', default=processed_db, checkbox_color='#2d5ba6', key='LOG_PROC')],
+		[sg.Checkbox('Log events', default=logfile, checkbox_color=blueBtnColor, key='LOG_FILE')],
+		[sg.Checkbox('Log processed files', default=processed_db, checkbox_color=blueBtnColor, key='LOG_PROC')],
 	]
 
-
 	layout_ftp = [
-		[sg.Text("FTP Uploading", font=app_font_subtitle, text_color='#6eb7ff')],
+		[sg.Text("FTP Uploading", font=app_font_subtitle, text_color=orangeBtnColor)],
 		[sg.HorizontalSeparator()],
-		[sg.Checkbox('FTP Upload', default=ftp_upload, checkbox_color='#2d5ba6', key='FTP_UPL')],
-		[sg.Checkbox('Auto-Upload', default=auto_upload, checkbox_color='#2d5ba6', key='FTP_AUTO')],
-		[sg.Button("FTP Settings", key='FTPSET', focus=False, button_color=(textColWhite,blueBtnColor), border_width=0)]
+		[sg.Checkbox('FTP Upload', default=ftp_upload, checkbox_color=orangeBtnColor, key='FTP_UPL')],
+		[sg.Checkbox('Auto-Upload', default=auto_upload, checkbox_color=orangeBtnColor, key='FTP_AUTO')],
+		[sg.Push(), sg.Button("FTP Settings", key='FTPSET', focus=False, button_color=(textColWhite,ftpsetBtnColor), border_width=0), sg.Push()],
 	]
 
 
 	layout_backup = [
-		[sg.Text("Backups", font=app_font_subtitle, text_color='#6eb7ff')],
+		[sg.Text("Backups", font=app_font_subtitle, text_color=greenBtnColor)],
 		[sg.HorizontalSeparator()],
-		[sg.Checkbox('Backup data', default=backup, checkbox_color='#2d5ba6', key='BACKUP')],
-		[sg.Checkbox('Cleanup processed', default=backup_cleanup, checkbox_color='#2d5ba6', key='BCKP_CLN')],
+		[sg.Checkbox('Backup data', default=backup, checkbox_color=greenBtnColor, key='BACKUP')],
+		[sg.Checkbox('Cleanup processed', default=backup_cleanup, checkbox_color=greenBtnColor, key='BCKP_CLN')],
 	]
 
 
 	layout_main = [
 		[sg.Text("PHOTO-SCAN Manager :: Settings", font=app_font_title, text_color=titleColor)],
 		[sg.HorizontalSeparator()],
-		[sg.Push(), sg.Frame('Working folders', layout_data, font=app_font_subtitle, title_color='#6eb7ff'), sg.Push()],
-		[sg.vtop([sg.Push(), sg.Col(layout_ftp), sg.Col(layout_logs), sg.Col(layout_backup), sg.Push()])],
-		[sg.vtop([sg.Push(), sg.Col(layout_meta), sg.Col(layout_metafix), sg.Push()])],
-		[sg.Button("Save & Close", key='SAVE', focus=True, button_color=(textColWhite,greenBtnColor), border_width=0), sg.Button('Close', key='QUIT', button_color=(textColWhite,orangeBtnColor), border_width=0)]
-		# [sg.Button('[C]ontinue', key='CONT', button_color=greenBtnColor), sg.Button('[Q]uit', key='QUIT', button_color=redBtnColor)]
+		[sg.Push(), sg.Frame('Working folders', layout_data, font=app_font_subtitle, title_color=yellowColor, relief='solid', border_width=1, pad=((0,0),(10,20))), sg.Push()],
+		[sg.Col(layout_logs, vertical_alignment='top'), sg.Col(layout_backup, vertical_alignment='top'), sg.Col(layout_ftp), sg.Push()],
+		[sg.Col(layout_meta, vertical_alignment='top'), sg.Push(), sg.Col(layout_metafix)],
+		[sg.Button("Save & Close", key='SAVE', focus=True, button_color=(textColWhite,greenBtnColor), border_width=0), sg.Button('Close', key='QUIT', button_color=(textColWhite,redBtnColor), border_width=0)]
 	]
 	
 	windowSettings = sg.Window('PhotoScan Manager - Settings', layout_main, use_default_focus=False, font=app_font, no_titlebar=False, icon=app_icon, finalize=True)
