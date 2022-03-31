@@ -18,7 +18,7 @@ init(autoreset=True)
 locale.setlocale(locale.LC_ALL, 'sl_SI')
 
 # <!#FV>
-app_version = '0.1.66'
+app_version = '0.1.68'
 #  </#FV>
 
 # App icon

@@ -19,7 +19,7 @@ init(autoreset=True)
 locale.setlocale(locale.LC_ALL, 'sl_SI')
 
 # <!#FV>
-app_version = '0.1.66'
+app_version = '0.1.68'
 app_version_mini = 'v' + str(app_version)
 #  </#FV>
 
@@ -65,7 +65,13 @@ sg.set_options(font=app_font)
 new_count = 0					# New datasets counter init
 process_start = False			# Start process initialize
 
+filedb_datasets = open("settings/new_dataset_folders.txt", "w")
+filedb_datasets.write("")
+filedb_pointfiles = open("settings/new_dataset_points.txt", "w")
+filedb_pointfiles.write("")
+
 app_statusbar_text = 'Settings loaded. App ready...'
+
 
 # Load settings from files in ./settings folder
 def metaOptionsRead():
@@ -397,12 +403,6 @@ def settingsRead():
 	fixed_surveyor = config.get('METADATA', 'fixed_surveyor')
 
 
-filedb_datasets = open("settings/new_dataset_folders.txt", "w")
-filedb_datasets.write("")
-filedb_pointfiles = open("settings/new_dataset_points.txt", "w")
-filedb_pointfiles.write("")
-
-
 # Process new data-sets
 def processNewData():
 	metaExport()
@@ -446,11 +446,11 @@ def appStartupMenu(process_start):
 	
 	menu_def = [['&File', ['&Exit::menuexit']],
             ['&Configuration', ['&General Settings', '&FTP Settings'], ],
-            ['&Help', ['&Documentation', '---', '&About...'], ]
+            ['&Help', ['&Documentation', '---', '&About'], ]
 			]
 
 	layout = [
-		[sg.MenuBar(menu_def, pad=0, font=app_font_menubar)],
+		# [sg.MenuBar(menu_def, pad=0, font=app_font_menubar)],
 		[sg.Text("PhotoScan Manager", font=app_font_title, text_color=titleColor), sg.Text(app_version_mini, font=app_font_statusbar, text_color=textColWhite)],
 		[sg.HorizontalSeparator()],
 		[sg.Text("START MENU", font=app_font_subtitle, text_color='#6eb7ff')],
